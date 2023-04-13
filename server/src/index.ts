@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
 
@@ -19,18 +19,18 @@ server.get("/", (_, res) => {
 server.register(
   (instance, opts, next) => {
     // GET requests
-    instance.get("/teams", async (request, reply) => {
-      const teams = await prisma.team.findMany();
-      reply.send(teams);
-    });
-    instance.get("/teams/:league", async (request: any, reply) => {
-      // Find all teams in a league
-      const teams = await prisma.team.findMany({
-        where: {
-          league: request.params.league,
-        },
-      });
-      reply.send(teams);
+    instance.get("/teams", async (request: any, reply) => {
+      if (request.query.league) {
+        const teams = await prisma.team.findMany({
+          where: {
+            league: request.query.league,
+          },
+        });
+        reply.send(teams);
+      } else {
+        const teams = await prisma.team.findMany();
+        reply.send(teams);
+      }
     });
     instance.get("/teams/:id", async (request: any, reply) => {
       const team = prisma.team.findFirst({
@@ -83,7 +83,7 @@ server.register(
           },
         }));
         if (!exists) {
-          reply.status(400).send({ message: `Team with id ${teamid} does not exists.` });
+          reply.status(400).send({message: `Team with id ${teamid} does not exists.`});
         }
       }
 
@@ -162,10 +162,10 @@ server.register(
 
     next();
   },
-  { prefix: "/api" }
+  {prefix: "/api"}
 );
 
-server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
+server.listen({host: "0.0.0.0", port: 8080}, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

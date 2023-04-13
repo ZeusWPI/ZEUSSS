@@ -2,6 +2,10 @@
 
 ## /api/teams
 
+Query parameters:
+
+-   `league` - filter by league (optional)
+
 returns:
 
 ```json
@@ -10,20 +14,6 @@ returns:
         id: number,
         name: string,
         league: string
-    }, ...
-]
-```
-
-## /api/teams/{league}
-
-returns:
-
-```json
-[
-    {
-        id: number,
-        name: string,
-        league: string = league
     }, ...
 ]
 ```

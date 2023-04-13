@@ -44,7 +44,7 @@ server.register(
     instance.get("/poules", async (request, reply) => {
       // TODO: list of poules, joined with teams and poule_match_teams
     });
-    instance.get("/poules/:id", async (request, reply) => {
+    instance.get("/poules/:id", async (request: any, reply) => {
       // TODO: implement
     });
     instance.get("/poules/:pouleId/matches", async (request, reply) => {

@@ -235,7 +235,7 @@ returns:
 
 # PATCH Requests
 
-## /teams
+## /teams/{teamId}
 
 body:
 
@@ -246,7 +246,7 @@ body:
 }
 ```
 
-## /poules
+## /poules/{pouleId}
 
 If old team ids != new team ids, remake poules only if amount of teams is different? make sure no matches played already. If no teams added only change name, dont update mathces.
 If only 1 team added, throw error.

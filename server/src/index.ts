@@ -32,19 +32,19 @@ server.register(
       });
       reply.send(teams);
     });
-    instance.get("/teams/{id}", async (request, reply) => {
+    instance.get("/teams/:id", async (request, reply) => {
       // TODO: implement
     });
     instance.get("/poules", async (request, reply) => {
       // TODO: list of poules, joined with teams and poule_match_teams
     });
-    instance.get("/poules/{id}", async (request, reply) => {
+    instance.get("/poules/:id", async (request, reply) => {
       // TODO: implement
     });
-    instance.get("/poules/{pouleId}/matches", async (request, reply) => {
+    instance.get("/poules/:pouleId/matches", async (request, reply) => {
       // TODO: implement
     });
-    instance.get("/poules/{pouleId}/matches/{matchId}", async (request, reply) => {
+    instance.get("/poules/:pouleId/matches/:matchId", async (request, reply) => {
       // TODO: implement
     });
     instance.get("/bracket", async (request, reply) => {
@@ -53,7 +53,7 @@ server.register(
     instance.get("/bracket/matches", async (request, reply) => {
       // TODO: implement
     });
-    instance.get("/bracket/matches/{matchId}", async (request, reply) => {
+    instance.get("/bracket/matches/:matchId", async (request, reply) => {
       // TODO: implement
     });
 
@@ -127,30 +127,30 @@ server.register(
     });
 
     // PATCH requests
-    instance.patch("/teams/{id}", async (request, reply) => {
+    instance.patch("/teams/:id", async (request, reply) => {
       // TODO: implement
     });
-    instance.patch("/poules/{id}", async (request, reply) => {
+    instance.patch("/poules/:id", async (request, reply) => {
       // TODO: implement
     });
-    instance.patch("/poules/{pouleId}/matches/{matchId}", async (request, reply) => {
+    instance.patch("/poules/:pouleId/matches/:matchId", async (request, reply) => {
       // TODO: implement
     });
-    instance.patch("/poules/{pouleId}/matches/{matchId}/{teamId}", async (request, reply) => {
+    instance.patch("/poules/:pouleId/matches/:matchId/:teamId", async (request, reply) => {
       // TODO: implement
     });
-    instance.patch("/bracket/matches/{matchId}", async (request, reply) => {
+    instance.patch("/bracket/matches/:matchId", async (request, reply) => {
       // TODO: implement
     });
-    instance.patch("/bracket/matches/{matchId}/{teamId}", async (request, reply) => {
+    instance.patch("/bracket/matches/:matchId/:teamId", async (request, reply) => {
       // TODO: implement
     });
 
     // DELETE requests
-    instance.delete("/teams/{teamId}", async (request, reply) => {
+    instance.delete("/teams/:teamId", async (request, reply) => {
       // TODO: implement
     });
-    instance.delete("/poules/{pouleId}", async (request, reply) => {
+    instance.delete("/poules/:pouleId", async (request, reply) => {
       // TODO: implement
     });
 

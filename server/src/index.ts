@@ -23,8 +23,14 @@ server.register(
       const teams = await prisma.team.findMany();
       reply.send(teams);
     });
-    instance.get("/teams/{category}", async (request, reply) => {
-      // TODO: implement
+    instance.get("/teams/:league", async (request: any, reply) => {
+      // Find all teams in a league
+      const teams = await prisma.team.findMany({
+        where: {
+          league: request.params.league,
+        },
+      });
+      reply.send(teams);
     });
     instance.get("/teams/{id}", async (request, reply) => {
       // TODO: implement

@@ -9,12 +9,12 @@ returns:
     {
         id: number,
         name: string,
-        category: string
+        league: string
     }, ...
 ]
 ```
 
-## /teams/{category}
+## /teams/{league}
 
 returns:
 
@@ -23,7 +23,7 @@ returns:
     {
         id: number,
         name: string,
-        category: string = category
+        league: string = league
     }, ...
 ]
 ```
@@ -36,7 +36,7 @@ returns:
 {
     id: number = id,
     name: string,
-    category: string
+    league: string
 }
 ```
 
@@ -52,7 +52,7 @@ returns:
         team: [
             id: number,
             name: string,
-            category: string
+            league: string
         ]
     }
 ]
@@ -69,7 +69,7 @@ returns:
     team: [
         id: number,
         name: string,
-        category: string,
+        league: string,
     ],
     matches: "/poules/{id}/matches"
 }
@@ -89,7 +89,7 @@ returns:
                 id: number,
                 name: string,
                 score: number,
-                category: string
+                league: string
             }, ...
         ]
     }
@@ -109,7 +109,7 @@ returns:
             id: number,
             name: string,
             score: number,
-            category: string
+            league: string
         }, ...
     ]
 }
@@ -140,7 +140,7 @@ returns:
                 id: number,
                 name: string,
                 score: number,
-                category: string,
+                league: string,
             }, ...
         ]
     }
@@ -161,7 +161,7 @@ returns:
             id: number,
             name: string,
             score: number,
-            category: string,
+            league: string,
         }, ...
     ]
 }
@@ -176,7 +176,7 @@ body:
 ```json
 {
     name: string,
-    category: string
+    league: string
 }
 ```
 
@@ -186,7 +186,7 @@ returns:
 {
     id: number,
     name: string,
-    category: string
+    league: string
 }
 ```
 
@@ -210,7 +210,7 @@ returns:
     team: [
         id: number,
         name: string,
-        category: string
+        league: string
     ]
 }
 ```
@@ -242,7 +242,7 @@ body:
 ```json
 {
     name?: string,
-    category?: string
+    league?: string
 }
 ```
 

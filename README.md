@@ -19,6 +19,12 @@ yarn build
 
 ```bash
 cd server
+
+# Setup database
+docker-compose up -d
+npx prisma generate
+npx prisma db push
+
 yarn install
 yarn build
 yarn start

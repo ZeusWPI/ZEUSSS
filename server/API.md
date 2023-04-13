@@ -5,9 +5,9 @@
 ```json
 [
     {
-        id,
-        name,
-        category
+        id: number,
+        name: string,
+        category: string
     }, ...
 ]
 ```
@@ -17,9 +17,9 @@
 ```json
 [
     {
-        id,
-        name,
-        category = category
+        id: number,
+        name: string,
+        category: string = category
     }, ...
 ]
 ```
@@ -28,9 +28,9 @@
 
 ```json
 {
-    id = id,
-    name,
-    category
+    id: number = id,
+    name: string,
+    category: string
 }
 ```
 
@@ -39,12 +39,12 @@
 ```json
 [
     {
-        id,
-        name,
+        id: number,
+        name: string,
         team: [
-            id,
-            name,
-            category
+            id: number,
+            name: string,
+            category: string
         ]
     }
 ]
@@ -54,12 +54,12 @@
 
 ```json
 {
-    id = id,
-    name,
+    id: number = id,
+    name: string,
     team: [
-        id,
-        name,
-        category
+        id: number,
+        name: string,
+        category: string,
     ],
     matches: "/poules/{id}/matches"
 }
@@ -70,14 +70,14 @@
 ```json
 [
     {
-        id,
-        date,
+        id: number,
+        date: Date,
         teams: [
             {
-                id,
-                name,
-                score,
-                category
+                id: number,
+                name: string,
+                score: number,
+                category: string
             }, ...
         ]
     }
@@ -88,14 +88,14 @@
 
 ```json
 {
-    id = matchId,
-    date,
+    id: number = matchId,
+    date: Date,
     teams: [
         {
-            id,
-            name,
-            score,
-            category
+            id: number,
+            name: string,
+            score: number,
+            category: string
         }, ...
     ]
 }
@@ -105,13 +105,7 @@
 
 ```json
 {
-    teams: [
-        {
-            id,
-            name,
-            category
-        }
-    ],
+    rounds: number,
 }
 ```
 
@@ -120,15 +114,15 @@
 ```json
 [
     {
-        id,
-        parentId,
-        date,
+        id: number,
+        parentId: number,
+        date: Date,
         teams: [
             {
-                id,
-                name,
-                score,
-                category
+                id: number,
+                name: string,
+                score: number,
+                category: string,
             }, ...
         ]
     }
@@ -139,15 +133,15 @@
 
 ```json
 {
-    id = matchId,
-    parentId,
-    date,
+    id: number = matchId,
+    parentId: number,
+    date: Date,
     teams: [
         {
-            id,
-            name,
-            score,
-            category
+            id: number,
+            name: string,
+            score: number,
+            category: string,
         }, ...
     ]
 }
@@ -159,35 +153,33 @@
 
 ```json
 {
-    name,
-    category
+    name: string,
+    category: string
 }
 ```
 
-returns `id`
+returns `id: number`
 
 ## /poules
 
 ```json
 {
-    name,
-    teams: [ id, ... ]
+    name: string,
+    teams: string[] // ids of the teams
 }
 ```
 
-returns `id`
+returns `id: number`
 
-## /bracket/matches
+## /bracket
 
 ```json
 {
-    teams: [ id, ... ],
-    date,
-    parentId
+    amount: number // amount of teams
 }
 ```
 
-returns `id`
+returns `null`
 
 # PATCH Requests
 
@@ -195,20 +187,20 @@ returns `id`
 
 ```json
 {
-    name?,
-    category?
+    name?: string,
+    category?: string
 }
 ```
 
 ## /poules
 
-If old team ids != new team ids, remake poules? make sure no matches played already. If no teams added only change name, dont update mathces.
+If old team ids != new team ids, remake poules only if amount of teams is different? make sure no matches played already. If no teams added only change name, dont update mathces.
 If only 1 team added, throw error.
 
 ```json
 {
-    name?,
-    teams?: [ id, ... ]
+    name?: string,
+    teams?: string[] // team ids
 }
 ```
 
@@ -216,7 +208,7 @@ If only 1 team added, throw error.
 
 ```json
 {
-    date?
+    date?: Date
 }
 ```
 
@@ -224,7 +216,7 @@ If only 1 team added, throw error.
 
 ```json
 {
-    score?
+    score?: number
 }
 ```
 
@@ -232,9 +224,8 @@ If only 1 team added, throw error.
 
 ```json
 {
-    teams?: [ id, ... ],
-    date?,
-    parentId?
+    teams?: string[] // list of team ids
+    date?: Date,
 }
 ```
 
@@ -242,6 +233,6 @@ If only 1 team added, throw error.
 
 ```json
 {
-    score?
+    score?: number,
 }
 ```

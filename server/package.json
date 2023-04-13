@@ -10,6 +10,7 @@
     "lint": "eslint --fix --ext .ts ./src"
   },
   "dependencies": {
+    "@fastify/static": "^6.10.1",
     "@tsconfig/node16": "^1.0.3",
     "@types/node": "^18.15.11",
     "fastify": "^4.15.0",

@@ -32,8 +32,14 @@ server.register(
       });
       reply.send(teams);
     });
-    instance.get("/teams/:id", async (request, reply) => {
-      // TODO: implement
+    instance.get("/teams/:id", async (request: any, reply) => {
+      const team = prisma.team.findFirst({
+        where: {
+          id: request.params.id,
+        },
+      });
+
+      reply.send(team);
     });
     instance.get("/poules", async (request, reply) => {
       // TODO: list of poules, joined with teams and poule_match_teams

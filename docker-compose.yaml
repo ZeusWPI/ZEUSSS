@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+    zeusss:
+        build:
+            context: .
+        container_name: zeusss
+        ports:
+          - "8080:8080"

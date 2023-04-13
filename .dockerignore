@@ -1,0 +1,11 @@
+**/*/node_modules
+**/*/.prettierrc
+**/*/.eslintrc
+**/*/.gitignore
+**/*/.eslintrc.cjs
+
+.dockerignore
+.tool-versions
+Dockerfile
+LICENSE
+README.md

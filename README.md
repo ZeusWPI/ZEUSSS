@@ -1,17 +1,31 @@
 # zeusss
 Livesite for SSS
 
+## Install dependecies
+
+```bash
+asdf install
+```
+
+## Webgui
+
+```bash
+cd webgui
+yarn install
+yarn build
+```
+
 ## Server
 
-### Setup local environment
-```
-cd server/
+```bash
+cd server
+
+# Setup database
 docker-compose up -d
 npx prisma generate
 npx prisma db push
-```
 
-### Run local environment
-```
-yarn dev
+yarn install
+yarn build
+yarn start
 ```

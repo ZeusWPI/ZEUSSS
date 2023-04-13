@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --watch src -e ts,tsx --exec ts-node src/index.ts",
     "build": "tsc",
-    "start": "node build/index.js",
+    "start": "node dist/index.js",
     "lint": "eslint --fix --ext .ts ./src"
   },
   "dependencies": {

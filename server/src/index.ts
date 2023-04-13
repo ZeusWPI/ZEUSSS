@@ -16,10 +16,16 @@ server.get("/", (_, res) => {
   res.sendFile("index.html");
 });
 
-server.get("/teams", async (request, reply) => {
-  const teams = await prisma.team.findMany();
-  reply.send(teams);
-});
+server.register(
+  (instance, opts, next) => {
+    instance.get("/teams", async (request, reply) => {
+      const teams = await prisma.team.findMany();
+      reply.send(teams);
+    });
+    next();
+  },
+  { prefix: "/api" }
+);
 
 server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
   if (err) {

@@ -1,6 +1,6 @@
 # GET Requests
 
-## /teams
+## /api/teams
 
 returns:
 
@@ -14,7 +14,7 @@ returns:
 ]
 ```
 
-## /teams/{league}
+## /api/teams/{league}
 
 returns:
 
@@ -28,7 +28,7 @@ returns:
 ]
 ```
 
-## /teams/{id}
+## /api/teams/{id}
 
 returns:
 
@@ -40,7 +40,7 @@ returns:
 }
 ```
 
-## /poules
+## /api/poules
 
 returns:
 
@@ -58,7 +58,7 @@ returns:
 ]
 ```
 
-## /poules/{id}
+## /api/poules/{id}
 
 returns:
 
@@ -75,7 +75,7 @@ returns:
 }
 ```
 
-## /poules/{id}/matches
+## /api/poules/{id}/matches
 
 returns:
 
@@ -96,7 +96,7 @@ returns:
 ]
 ```
 
-## /poules/{id}/matches/{matchId}
+## /api/poules/{id}/matches/{matchId}
 
 returns:
 
@@ -115,7 +115,7 @@ returns:
 }
 ```
 
-## /bracket
+## /api/bracket
 
 returns:
 
@@ -125,7 +125,7 @@ returns:
 }
 ```
 
-## /bracket/matches
+## /api/bracket/matches
 
 returns:
 
@@ -147,7 +147,7 @@ returns:
 ]
 ```
 
-## /bracket/matches/{matchId}
+## /api/bracket/matches/{matchId}
 
 returns:
 
@@ -169,7 +169,7 @@ returns:
 
 # POST Requests
 
-## /teams
+## /api/teams
 
 body:
 
@@ -190,7 +190,7 @@ returns:
 }
 ```
 
-## /poules
+## /api/poules
 
 body:
 
@@ -215,7 +215,7 @@ returns:
 }
 ```
 
-## /bracket
+## /api/bracket
 
 body:
 
@@ -235,7 +235,7 @@ returns:
 
 # PATCH Requests
 
-## /teams/{teamId}
+## /api/teams/{teamId}
 
 body:
 
@@ -246,7 +246,7 @@ body:
 }
 ```
 
-## /poules/{pouleId}
+## /api/poules/{pouleId}
 
 If old team ids != new team ids, remake poules only if amount of teams is different? make sure no matches played already. If no teams added only change name, dont update mathces.
 If only 1 team added, throw error.
@@ -260,7 +260,7 @@ body:
 }
 ```
 
-## /poules/{pouleId}/matches/{matchId}
+## /api/poules/{pouleId}/matches/{matchId}
 
 body:
 
@@ -270,7 +270,7 @@ body:
 }
 ```
 
-## /poules/{pouleId}/matches/{matchId}/{teamId}
+## /api/poules/{pouleId}/matches/{matchId}/{teamId}
 
 body:
 
@@ -280,7 +280,7 @@ body:
 }
 ```
 
-## /bracket/matches/{matchId}
+## /api/bracket/matches/{matchId}
 
 body:
 
@@ -291,7 +291,7 @@ body:
 }
 ```
 
-## /bracket/matches/{matchId}/{teamId}
+## /api/bracket/matches/{matchId}/{teamId}
 
 body:
 
@@ -303,10 +303,10 @@ body:
 
 # DELETE Requests
 
-## /teams/{teamId}
+## /api/teams/{teamId}
 
 This only works if the teams is NOT included in any poule or match
 
-## /poules/{pouleId}
+## /api/poules/{pouleId}
 
 This only works if no matches have been played in the poule

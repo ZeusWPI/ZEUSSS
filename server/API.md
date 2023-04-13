@@ -236,3 +236,27 @@ If only 1 team added, throw error.
     score?: number,
 }
 ```
+
+# DELETE Requests
+
+## /teams
+
+This only works if the teams is NOT included in any poule or match
+
+```json
+{
+    id: number
+}
+```
+
+returns `id: number`
+
+## /poules
+
+This only works if no matches have been played in the poule
+
+```json
+{
+    id: number
+}
+```

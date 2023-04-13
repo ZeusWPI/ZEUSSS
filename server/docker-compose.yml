@@ -1,0 +1,18 @@
+volumes:
+  pgdata-zeusssss:
+
+services:
+  db:
+    image: postgres:12-alpine
+    command: postgres -c 'max_connections=500' -c 'shared_buffers=1024' -c 'log_min_messages=notice'
+    restart: always
+    environment:
+      POSTGRES_DB: zeusssss
+      POSTGRES_USER: zeus
+      POSTGRES_PASSWORD: "zeusisdemax"
+      TZ: Europe/Brussels
+      PGTZ: Europe/Brussels
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-zeusssss:/var/lib/postgresql/data

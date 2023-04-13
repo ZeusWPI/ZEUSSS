@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id               Int                @id @default(autoincrement())
+  name             String
+  league           String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  PouleMatchTeam   PouleMatchTeam[]
+  BracketMatchTeam BracketMatchTeam[]
+}
+
+model Poule {
+  id         Int          @id @default(autoincrement())
+  name       String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  PouleMatch PouleMatch[]
+}
+
+model PouleMatch {
+  id             Int              @id @default(autoincrement())
+  pouleId        Int
+  poule          Poule            @relation(fields: [pouleId], references: [id])
+  date           DateTime
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  PouleMatchTeam PouleMatchTeam[]
+}
+
+model PouleMatchTeam {
+  id           Int        @id @default(autoincrement())
+  pouleMatchId Int
+  pouleMatch   PouleMatch @relation(fields: [pouleMatchId], references: [id])
+  teamId       Int
+  team         Team       @relation(fields: [teamId], references: [id])
+  score        Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model BracketMatch {
+  id               Int                @id @default(autoincrement())
+  parentId         Int
+  parent           BracketMatch       @relation("parent", fields: [parentId], references: [id])
+  children         BracketMatch[]     @relation("parent")
+  date             DateTime
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  BracketMatchTeam BracketMatchTeam[]
+}
+
+model BracketMatchTeam {
+  id             Int          @id @default(autoincrement())
+  bracketMatchId Int
+  bracketMatch   BracketMatch @relation(fields: [bracketMatchId], references: [id])
+  teamId         Int
+  team           Team         @relation(fields: [teamId], references: [id])
+  score          Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}

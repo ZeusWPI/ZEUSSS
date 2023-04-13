@@ -1,10 +1,15 @@
-import fastify from 'fastify'
-const server = fastify()
+import fastify from "fastify";
+import { PrismaClient } from "@prisma/client";
 
-server.listen({ port: 8080 }, (err, address) => {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-  }
-  console.log(`Server listening at ${address}`)
-})
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const prisma = new PrismaClient();
+const server = fastify();
+
+server.get("/teams", async (request, reply) => {
+  const teams = await prisma.team.findMany();
+  reply.send(teams);
+});
+
+server.listen(8080).then(() => {
+  console.log("Server started");
+});

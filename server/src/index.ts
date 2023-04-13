@@ -62,9 +62,60 @@ server.register(
       });
       reply.send(team);
     });
-    instance.post("/poules", async (request, reply) => {
-      // TODO: implement
+    instance.post("/poules", async (request: any, reply) => {
+      // Checking if teams exist
+      for (const teamid of request.body.teams) {
+        const exists = !!(await prisma.team.findFirst({
+          where: {
+            id: teamid,
+          },
+        }));
+        if (!exists) {
+          reply.status(400).send({ message: `Team with id ${teamid} does not exists.` });
+        }
+      }
+
+      // Create a new team
+      const poule = await prisma.poule.create({
+        data: {
+          name: request.body.name,
+        },
+      });
+      reply.send(poule);
+
+      for (const team1id of request.body.teams) {
+        for (const team2id of request.body.teams) {
+          if (team1id < team2id) {
+            const pouleMatch = await prisma.pouleMatch.create({
+              data: {
+                pouleId: poule.id,
+                date: new Date(), // TODO: should be null
+              },
+            });
+            reply.send(pouleMatch);
+
+            const pouleMatchTeam1 = await prisma.pouleMatchTeam.create({
+              data: {
+                pouleMatchId: pouleMatch.id,
+                teamId: team1id,
+                score: -1, // TODO: should be null
+              },
+            });
+            reply.send(pouleMatchTeam1);
+
+            const pouleMatchTeam2 = await prisma.pouleMatchTeam.create({
+              data: {
+                pouleMatchId: pouleMatch.id,
+                teamId: team2id,
+                score: -1, // TODO: should be null
+              },
+            });
+            reply.send(pouleMatchTeam2);
+          }
+        }
+      }
     });
+
     instance.post("/bracket", async (request, reply) => {
       // TODO: implement
     });

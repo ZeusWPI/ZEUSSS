@@ -32,7 +32,7 @@ model PouleMatch {
   id             Int              @id @default(autoincrement())
   pouleId        Int
   poule          Poule            @relation(fields: [pouleId], references: [id])
-  date           DateTime
+  date           DateTime?  
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   PouleMatchTeam PouleMatchTeam[]

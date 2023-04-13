@@ -52,8 +52,15 @@ server.register(
     });
 
     // POST requests
-    instance.post("/teams", async (request, reply) => {
-      // TODO: implement
+    instance.post("/teams", async (request: any, reply) => {
+      // Create a new team
+      const team = await prisma.team.create({
+        data: {
+          name: request.body.name,
+          league: request.body.league,
+        },
+      });
+      reply.send(team);
     });
     instance.post("/poules", async (request, reply) => {
       // TODO: implement

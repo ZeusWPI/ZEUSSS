@@ -2,6 +2,8 @@
 
 ## /teams
 
+returns:
+
 ```json
 [
     {
@@ -13,6 +15,8 @@
 ```
 
 ## /teams/{category}
+
+returns:
 
 ```json
 [
@@ -26,6 +30,8 @@
 
 ## /teams/{id}
 
+returns:
+
 ```json
 {
     id: number = id,
@@ -35,6 +41,8 @@
 ```
 
 ## /poules
+
+returns:
 
 ```json
 [
@@ -52,6 +60,8 @@
 
 ## /poules/{id}
 
+returns:
+
 ```json
 {
     id: number = id,
@@ -66,6 +76,8 @@
 ```
 
 ## /poules/{id}/matches
+
+returns:
 
 ```json
 [
@@ -86,6 +98,8 @@
 
 ## /poules/{id}/matches/{matchId}
 
+returns:
+
 ```json
 {
     id: number = matchId,
@@ -103,6 +117,8 @@
 
 ## /bracket
 
+returns:
+
 ```json
 {
     rounds: number,
@@ -110,6 +126,8 @@
 ```
 
 ## /bracket/matches
+
+returns:
 
 ```json
 [
@@ -131,6 +149,8 @@
 
 ## /bracket/matches/{matchId}
 
+returns:
+
 ```json
 {
     id: number = matchId,
@@ -151,6 +171,8 @@
 
 ## /teams
 
+body:
+
 ```json
 {
     name: string,
@@ -158,9 +180,19 @@
 }
 ```
 
-returns `id: number`
+returns:
+
+```json
+{
+    id: number,
+    name: string,
+    category: string
+}
+```
 
 ## /poules
+
+body:
 
 ```json
 {
@@ -169,9 +201,23 @@ returns `id: number`
 }
 ```
 
-returns `id: number`
+returns:
+
+```json
+{
+    id: number,
+    name: string,
+    team: [
+        id: number,
+        name: string,
+        category: string
+    ]
+}
+```
 
 ## /bracket
+
+body:
 
 ```json
 {
@@ -179,11 +225,19 @@ returns `id: number`
 }
 ```
 
-returns `null`
+returns:
+
+```json
+{
+    rounds: number,
+}
+```
 
 # PATCH Requests
 
 ## /teams
+
+body:
 
 ```json
 {
@@ -197,6 +251,8 @@ returns `null`
 If old team ids != new team ids, remake poules only if amount of teams is different? make sure no matches played already. If no teams added only change name, dont update mathces.
 If only 1 team added, throw error.
 
+body:
+
 ```json
 {
     name?: string,
@@ -206,6 +262,8 @@ If only 1 team added, throw error.
 
 ## /poules/{pouleId}/matches/{matchId}
 
+body:
+
 ```json
 {
     date?: Date
@@ -214,6 +272,8 @@ If only 1 team added, throw error.
 
 ## /poules/{pouleId}/matches/{matchId}/{teamId}
 
+body:
+
 ```json
 {
     score?: number
@@ -221,6 +281,8 @@ If only 1 team added, throw error.
 ```
 
 ## /bracket/matches/{matchId}
+
+body:
 
 ```json
 {
@@ -231,6 +293,8 @@ If only 1 team added, throw error.
 
 ## /bracket/matches/{matchId}/{teamId}
 
+body:
+
 ```json
 {
     score?: number,
@@ -239,24 +303,10 @@ If only 1 team added, throw error.
 
 # DELETE Requests
 
-## /teams
+## /teams/{teamId}
 
 This only works if the teams is NOT included in any poule or match
 
-```json
-{
-    id: number
-}
-```
-
-returns `id: number`
-
-## /poules
+## /poules/{pouleId}
 
 This only works if no matches have been played in the poule
-
-```json
-{
-    id: number
-}
-```

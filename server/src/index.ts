@@ -170,24 +170,23 @@ server.register(
       }
 
       // Checking if teams exist
-      for (const teamid of request.body.teams) {
+      for (const teamId of request.body.teams) {
         const exists = !!(await prisma.team.findFirst({
           where: {
-            id: teamid,
+            id: teamId,
           },
         }));
         if (!exists) {
-          reply.status(400).send({ message: `Team with id ${teamid} does not exists.` });
+          reply.status(400).send({ message: `Team with id ${teamId} does not exists.` });
         }
       }
 
-      // Create a new team
+      // Create a new poule
       const poule = await prisma.poule.create({
         data: {
           name: request.body.name,
         },
       });
-      reply.send(poule);
 
       for (const team1id of request.body.teams) {
         for (const team2id of request.body.teams) {
@@ -198,28 +197,41 @@ server.register(
                 date: null,
               },
             });
-            reply.send(pouleMatch);
 
-            const pouleMatchTeam1 = await prisma.pouleMatchTeam.create({
+            await prisma.pouleMatchTeam.create({
               data: {
                 pouleMatchId: pouleMatch.id,
                 teamId: team1id,
                 score: null,
               },
             });
-            reply.send(pouleMatchTeam1);
 
-            const pouleMatchTeam2 = await prisma.pouleMatchTeam.create({
+            await prisma.pouleMatchTeam.create({
               data: {
                 pouleMatchId: pouleMatch.id,
                 teamId: team2id,
                 score: null,
               },
             });
-            reply.send(pouleMatchTeam2);
           }
         }
       }
+
+      const result = {
+        id: poule.id,
+        name: poule.name,
+        teams: await Promise.all(
+          request.body.teams.map(
+            async (teamId: number) =>
+              await prisma.team.findFirst({
+                where: {
+                  id: teamId,
+                },
+              })
+          )
+        ),
+      };
+      reply.send(result);
     });
 
     instance.post("/bracket", async (request: any, reply) => {

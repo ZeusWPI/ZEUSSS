@@ -187,7 +187,7 @@ body:
 ```json
 {
     name: string,
-    teams: string[] // ids of the teams
+    teams: number[] // ids of the teams
 }
 ```
 
@@ -197,7 +197,7 @@ returns:
 {
     id: number,
     name: string,
-    team: [
+    teams: [
         id: number,
         name: string,
         league: string
@@ -246,7 +246,7 @@ body:
 ```json
 {
     name?: string,
-    teams?: string[] // team ids
+    teams?: number[] // team ids
 }
 ```
 

@@ -159,6 +159,11 @@ server.register(
       reply.send(team);
     });
     instance.post("/poules", async (request: any, reply) => {
+      // Check if at least 2 teams are given
+      if (request.body.teams.length < 2) {
+        reply.status(400).send({ message: "At least 2 teams are required." });
+      }
+
       // Checking if teams exist
       for (const teamid of request.body.teams) {
         const exists = !!(await prisma.team.findFirst({

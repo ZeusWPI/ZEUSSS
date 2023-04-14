@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type BracketMatch } from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
 
@@ -222,8 +222,57 @@ server.register(
       }
     });
 
-    instance.post("/bracket", async (request, reply) => {
-      // TODO: implement
+    instance.post("/bracket", async (request :any, reply) => {
+      const amount: number = request.body.amount
+      const league: string = request.body.league
+
+      if (league.length === 0) {
+        reply.status(400).send({'message': 'league should not be empty'})
+        return
+      }
+
+      const bracketMatchesForLeague = await prisma.bracketMatch.findMany({
+        where: {
+          league: league,
+        },
+      });
+
+      if (bracketMatchesForLeague.length !== 0) {
+        reply.status(400).send({'message': 'league already has a bracket'})
+        return
+      }
+
+      if ((2**Math.round(Math.log2(amount))) !== amount) {
+        reply.status(400).send({'message': 'amount should be a power of 2'})
+        return
+      }
+
+      const initializeBracketRecursive = async (n: number, parent: null | BracketMatch) => {
+        if (n === 1) {}
+        else if (n === 2) {
+          await prisma.bracketMatch.create({
+            data:{
+              parentId: parent === null ? null : parent.id,
+              league: league,
+              date: null
+            }
+          })
+        } else {
+          const new_parent = await prisma.bracketMatch.create({
+            data:{
+              parentId: parent === null ? null : parent.id,
+              league: league,
+              date: null
+            }
+          })
+          const half = n / 2
+          await initializeBracketRecursive(half, new_parent)
+          await initializeBracketRecursive(half, new_parent)
+        }
+      }
+
+      await initializeBracketRecursive(amount, null)
+      reply.send({'message': 'created'})
     });
 
     // PATCH requests

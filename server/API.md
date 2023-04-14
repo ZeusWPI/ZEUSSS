@@ -39,10 +39,12 @@ returns:
     {
         id: number,
         name: string,
-        team: [
-            id: number,
-            name: string,
-            league: string
+        teams: [
+            {
+                id: number,
+                name: string,
+                league: string
+            }, ...
         ]
     }
 ]
@@ -56,10 +58,12 @@ returns:
 {
     id: number = id,
     name: string,
-    team: [
-        id: number,
-        name: string,
-        league: string,
+    teams: [
+        {
+            id: number,
+            name: string,
+            league: string
+        }, ...
     ],
     matches: "/poules/{id}/matches"
 }

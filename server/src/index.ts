@@ -74,7 +74,7 @@ server.register(
         return {
           id: p.id,
           name: p.name,
-          team: p.PouleMatch.flatMap(pm => pm.PouleMatchTeam.map(pmt => pmt.team)),
+          teams: p.PouleMatch.flatMap(pm => pm.PouleMatchTeam.map(pmt => pmt.team)),
         };
       });
 
@@ -90,7 +90,7 @@ server.register(
       type CompletePoule = {
         id: number;
         name: string;
-        team: PouleTeam[];
+        teams: PouleTeam[];
         matches: string;
       };
 
@@ -131,7 +131,7 @@ server.register(
       const complete_poule: CompletePoule = {
         id: id_param,
         name: poule.name,
-        team: poule_teams,
+        teams: poule_teams,
         matches: `/poules/${poule.id}/matches`,
       };
 

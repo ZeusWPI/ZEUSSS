@@ -136,8 +136,54 @@ server.register(
 
       reply.send(complete_poule);
     });
-    instance.get("/poules/:pouleId/matches", async (request, reply) => {
-      // TODO: implement
+    instance.get("/poules/:pouleId/matches", async (request: any, reply) => {
+      // Check if poule exists
+      const poule = await prisma.poule.findFirst({
+        where: {
+          id: parseInt(request.params.pouleId),
+        },
+      });
+      if (!poule) {
+        reply.code(404).send();
+        return;
+      }
+
+      // Get list of matches
+      const pouleMatches = await prisma.pouleMatch.findMany({
+        where: {
+          pouleId: parseInt(request.params.pouleId),
+        },
+        include: {
+          PouleMatchTeam: {
+            include: {
+              team: {
+                select: {
+                  id: true,
+                  name: true,
+                  league: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const pouleMatchesFormatted = pouleMatches.map(pm => {
+        return {
+          id: pm.id,
+          date: pm.date,
+          teams: pm.PouleMatchTeam.map(pmt => {
+            return {
+              id: pmt.team.id,
+              name: pmt.team.name,
+              score: pmt.score,
+              league: pmt.team.league,
+            };
+          }),
+        };
+      });
+
+      reply.send(pouleMatchesFormatted);
     });
     instance.get("/poules/:pouleId/matches/:matchId", async (request, reply) => {
       // TODO: implement

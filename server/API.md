@@ -264,7 +264,7 @@ body:
 }
 ```
 
-## /api/poules/{pouleId}/matches/{matchId}/{teamId}
+## /api/poules/{pouleId}/matches/{matchId}/teams/{teamId}
 
 body:
 

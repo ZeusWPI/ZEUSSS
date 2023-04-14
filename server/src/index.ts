@@ -371,8 +371,36 @@ server.register(
         reply.send(pouleMatch);
       }
     });
-    instance.patch("/poules/:pouleId/matches/:matchId/:teamId", async (request, reply) => {
-      // TODO: implement
+    instance.patch("/poules/:pouleId/matches/:matchId/teams/:teamId", async (request: any, reply) => {
+      // Check if matchId belongs to pouleMatchId and pouleId
+      let pouleMatchTeam = await prisma.pouleMatchTeam.findFirst({
+        where: {
+          pouleMatchId: parseInt(request.params.matchId),
+          teamId: parseInt(request.params.teamId),
+          pouleMatch: {
+            pouleId: parseInt(request.params.pouleId),
+          },
+        },
+      });
+      if (!pouleMatchTeam) {
+        reply.status(400).send({
+          message: `Team with id ${request.params.teamId} not found in match ${request.params.matchId} in poule ${request.params.pouleId}.`,
+        });
+        return;
+      }
+
+      // Check if score is given
+      if (request.body.score !== undefined) {
+        pouleMatchTeam = await prisma.pouleMatchTeam.update({
+          where: {
+            id: pouleMatchTeam.id,
+          },
+          data: {
+            score: request.body.score,
+          },
+        });
+      }
+      reply.send(pouleMatchTeam);
     });
     instance.patch("/bracket/matches/:matchId", async (request, reply) => {
       // TODO: implement

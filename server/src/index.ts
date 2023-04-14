@@ -1,7 +1,8 @@
 import fastify from "fastify";
-import { PrismaClient, type BracketMatch } from "@prisma/client";
+import { type BracketMatch, PrismaClient } from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
+import { createPouleMatches } from "./poules";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const prisma = new PrismaClient();
@@ -188,49 +189,7 @@ server.register(
         },
       });
 
-      for (const team1id of request.body.teams) {
-        for (const team2id of request.body.teams) {
-          if (team1id < team2id) {
-            const pouleMatch = await prisma.pouleMatch.create({
-              data: {
-                pouleId: poule.id,
-                date: null,
-              },
-            });
-
-            await prisma.pouleMatchTeam.create({
-              data: {
-                pouleMatchId: pouleMatch.id,
-                teamId: team1id,
-                score: null,
-              },
-            });
-
-            await prisma.pouleMatchTeam.create({
-              data: {
-                pouleMatchId: pouleMatch.id,
-                teamId: team2id,
-                score: null,
-              },
-            });
-          }
-        }
-      }
-
-      const result = {
-        id: poule.id,
-        name: poule.name,
-        teams: await Promise.all(
-          request.body.teams.map(
-            async (teamId: number) =>
-              await prisma.team.findFirst({
-                where: {
-                  id: teamId,
-                },
-              })
-          )
-        ),
-      };
+      const result = await createPouleMatches(prisma, request.body.teams, poule);
       reply.send(result);
     });
 
@@ -320,8 +279,96 @@ server.register(
 
       reply.send(team);
     });
-    instance.patch("/poules/:id", async (request, reply) => {
-      // TODO: implement
+    instance.patch("/poules/:id", async (request: any, reply) => {
+      // Check that poule exists
+      let poule = await prisma.poule.findFirst({
+        where: {
+          id: parseInt(request.params.id),
+        },
+      });
+      const pouleExists = !!poule;
+      if (!pouleExists) {
+        reply.status(400).send({ message: "Poule does not exist." });
+        return;
+      }
+
+      // If name is given, update poule name
+      if (request.body.name !== undefined) {
+        poule = await prisma.poule.update({
+          where: {
+            id: parseInt(request.params.id),
+          },
+          data: {
+            name: request.body.name,
+          },
+        });
+      }
+
+      // If teams are given, update poule teams
+      if (request.body.teams !== undefined) {
+        // Check if at least 2 teams are given
+        if (request.body.teams.length < 2) {
+          reply.status(400).send({ message: "At least 2 teams are required." });
+          return;
+        }
+
+        // Checking if teams exist
+        for (const teamId of request.body.teams) {
+          const exists = !!(await prisma.team.findFirst({
+            where: {
+              id: teamId,
+            },
+          }));
+          if (!exists) {
+            reply.status(400).send({ message: `Team with id ${teamId} does not exists.` });
+            return;
+          }
+        }
+
+        // Check if matches have already been played (score !== null)
+        const pouleMatches = await prisma.pouleMatch.findMany({
+          where: {
+            pouleId: parseInt(request.params.id),
+          },
+        });
+        for (const pouleMatch of pouleMatches) {
+          // Check if there exists a score for a poule match team
+          const pouleMatchTeam = await prisma.pouleMatchTeam.findFirst({
+            where: {
+              pouleMatchId: pouleMatch.id,
+              score: {
+                not: null,
+              },
+            },
+          });
+          if (pouleMatchTeam !== null) {
+            reply.status(400).send({ message: "Matches have already been played." });
+            return;
+          }
+        }
+
+        // Delete all poule match teams
+        await prisma.pouleMatchTeam.deleteMany({
+          where: {
+            pouleMatch: {
+              pouleId: parseInt(request.params.id),
+            },
+          },
+        });
+
+        // Delete all poule matches
+        await prisma.pouleMatch.deleteMany({
+          where: {
+            pouleId: parseInt(request.params.id),
+          },
+        });
+
+        // Create new poule matches
+        const result = await createPouleMatches(prisma, request.body.teams, poule);
+        reply.send(result);
+        return;
+      }
+      reply.send(poule);
     });
     instance.patch("/poules/:pouleId/matches/:matchId", async (request, reply) => {
       // TODO: implement

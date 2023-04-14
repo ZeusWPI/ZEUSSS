@@ -168,6 +168,7 @@ server.register(
       // Check if at least 2 teams are given
       if (request.body.teams.length < 2) {
         reply.status(400).send({ message: "At least 2 teams are required." });
+        return;
       }
 
       // Checking if teams exist
@@ -179,6 +180,7 @@ server.register(
         }));
         if (!exists) {
           reply.status(400).send({ message: `Team with id ${teamId} does not exists.` });
+          return;
         }
       }
 
@@ -258,6 +260,7 @@ server.register(
         }));
         if (teamIsUsed) {
           reply.status(400).send({ message: "Team is already used in a poule." });
+          return;
         }
       }
 

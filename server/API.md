@@ -216,6 +216,7 @@ body:
 ```json
 {
     amount: number // amount of teams
+    league: string
 }
 ```
 
@@ -285,7 +286,7 @@ body:
 }
 ```
 
-## /api/bracket/matches/{matchId}/{teamId}
+## /api/bracket/matches/{matchId}/teams/{teamId}
 
 body:
 

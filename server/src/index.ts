@@ -405,8 +405,33 @@ server.register(
     instance.patch("/bracket/matches/:matchId", async (request, reply) => {
       // TODO: implement
     });
-    instance.patch("/bracket/matches/:matchId/:teamId", async (request, reply) => {
-      // TODO: implement
+    instance.patch("/bracket/matches/:matchId/teams/:teamId", async (request: any, reply) => {
+      // Check if matchId belongs to teamId
+      let bracketMatchTeam = await prisma.bracketMatchTeam.findFirst({
+        where: {
+          bracketMatchId: parseInt(request.params.matchId),
+          teamId: parseInt(request.params.teamId),
+        },
+      });
+      if (!bracketMatchTeam) {
+        reply.status(400).send({
+          message: `Team with id ${request.params.teamId} not found in match ${request.params.matchId}.`,
+        });
+        return;
+      }
+
+      // Check if score is given
+      if (request.body.score !== undefined) {
+        bracketMatchTeam = await prisma.bracketMatchTeam.update({
+          where: {
+            id: bracketMatchTeam.id,
+          },
+          data: {
+            score: request.body.score,
+          },
+        });
+      }
+      reply.send(bracketMatchTeam);
     });
 
     // DELETE requests

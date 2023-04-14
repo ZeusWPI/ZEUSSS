@@ -277,8 +277,36 @@ server.register(
     });
 
     // PATCH requests
-    instance.patch("/teams/:id", async (request, reply) => {
-      // TODO: implement
+    instance.patch("/teams/:teamId", async (request: any, reply) => {
+      // Update a team's name and/or league (league only if team not used in a poule yet)
+      if (request.body.league !== undefined) {
+        const teamIsUsed = !!(await prisma.pouleMatchTeam.findFirst({
+          where: {
+            teamId: parseInt(request.params.teamId),
+          },
+        }));
+        if (teamIsUsed) {
+          reply.status(400).send({ message: "Team is already used in a poule." });
+        }
+      }
+
+      const data: any = {};
+      if (request.body.name !== undefined) {
+        data["name"] = request.body.name;
+      }
+      if (request.body.league !== undefined) {
+        data["league"] = request.body.league;
+      }
+
+      // Update a team's name and/or league
+      const team = await prisma.team.update({
+        where: {
+          id: parseInt(request.params.teamId),
+        },
+        data: data,
+      });
+
+      reply.send(team);
     });
     instance.patch("/poules/:id", async (request, reply) => {
       // TODO: implement

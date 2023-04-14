@@ -42,7 +42,37 @@ server.register(
       reply.send(team);
     });
     instance.get("/poules", async (request, reply) => {
-      // TODO: list of poules, joined with teams and poule_match_teams
+      const poules = await prisma.poule.findMany({
+        select: {
+          id: true,
+          name: true,
+          PouleMatch: {
+            include: {
+              PouleMatchTeam: {
+                include: {
+                  team: {
+                    select: {
+                      id: true,
+                      name: true,
+                      league: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const mapped_poules = poules.map(p => {
+        return {
+          id: p.id,
+          name: p.name,
+          team: p.PouleMatch.flatMap(pm => pm.PouleMatchTeam.map(pmt => pmt.team)),
+        };
+      });
+
+      reply.send(mapped_poules);
     });
     instance.get("/poules/:id", async (request: any, reply) => {
       type PouleTeam = {

@@ -4,7 +4,6 @@ import fastify_static from "@fastify/static";
 import * as path from "path";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "./poules";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const prisma = new PrismaClient();
 const server = fastify();
 
@@ -345,8 +344,32 @@ server.register(
       }
       reply.send(poule);
     });
-    instance.patch("/poules/:pouleId/matches/:matchId", async (request, reply) => {
-      // TODO: implement
+    instance.patch("/poules/:pouleId/matches/:matchId", async (request: any, reply) => {
+      if (request.body.date !== undefined) {
+        // Check if matchId belongs to pouleId
+        let pouleMatch = await prisma.pouleMatch.findFirst({
+          where: {
+            id: parseInt(request.params.matchId),
+            pouleId: parseInt(request.params.pouleId),
+          },
+        });
+        if (!pouleMatch) {
+          reply
+            .status(400)
+            .send({ message: `Match with id ${request.params.matchId} not found in poule ${request.params.pouleId}.` });
+          return;
+        }
+
+        pouleMatch = await prisma.pouleMatch.update({
+          where: {
+            id: parseInt(request.params.matchId),
+          },
+          data: {
+            date: request.body.date,
+          },
+        });
+        reply.send(pouleMatch);
+      }
     });
     instance.patch("/poules/:pouleId/matches/:matchId/:teamId", async (request, reply) => {
       // TODO: implement

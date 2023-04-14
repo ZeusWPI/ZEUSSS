@@ -242,8 +242,26 @@ server.register(
     });
 
     // DELETE requests
-    instance.delete("/teams/:teamId", async (request, reply) => {
-      // TODO: implement
+    instance.delete("/teams/:teamId", async (request: any, reply) => {
+      // Only delete if no poule matches are using this team
+      const teamIsUsed = !!(await prisma.pouleMatchTeam.findFirst({
+        where: {
+          teamId: parseInt(request.params.teamId),
+        },
+      }));
+      if (teamIsUsed) {
+        reply.status(400).send({ message: "Team is already used in a poule match." });
+        return;
+      }
+
+      // Delete a team with id = teamId
+      await prisma.team.delete({
+        where: {
+          id: parseInt(request.params.teamId),
+        },
+      });
+
+      reply.status(200);
     });
     instance.delete("/poules/:pouleId", async (request, reply) => {
       // TODO: implement

@@ -44,17 +44,17 @@ model PouleMatchTeam {
   pouleMatch   PouleMatch @relation(fields: [pouleMatchId], references: [id])
   teamId       Int
   team         Team       @relation(fields: [teamId], references: [id])
-  score        Int
+  score        Int?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
 
 model BracketMatch {
   id               Int                @id @default(autoincrement())
-  parentId         Int
-  parent           BracketMatch       @relation("parent", fields: [parentId], references: [id])
+  parentId         Int?
+  parent           BracketMatch?      @relation("parent", fields: [parentId], references: [id])
   children         BracketMatch[]     @relation("parent")
-  date             DateTime
+  date             DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   BracketMatchTeam BracketMatchTeam[]
@@ -66,7 +66,7 @@ model BracketMatchTeam {
   bracketMatch   BracketMatch @relation(fields: [bracketMatchId], references: [id])
   teamId         Int
   team           Team         @relation(fields: [teamId], references: [id])
-  score          Int
+  score          Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }

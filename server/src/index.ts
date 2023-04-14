@@ -83,7 +83,7 @@ server.register(
           },
         }));
         if (!exists) {
-          reply.status(400).send({message: `Team with id ${teamid} does not exists.`});
+          reply.status(400).send({ message: `Team with id ${teamid} does not exists.` });
         }
       }
 
@@ -101,7 +101,7 @@ server.register(
             const pouleMatch = await prisma.pouleMatch.create({
               data: {
                 pouleId: poule.id,
-                date: new Date(), // TODO: should be null
+                date: null,
               },
             });
             reply.send(pouleMatch);
@@ -110,7 +110,7 @@ server.register(
               data: {
                 pouleMatchId: pouleMatch.id,
                 teamId: team1id,
-                score: -1, // TODO: should be null
+                score: null,
               },
             });
             reply.send(pouleMatchTeam1);
@@ -119,7 +119,7 @@ server.register(
               data: {
                 pouleMatchId: pouleMatch.id,
                 teamId: team2id,
-                score: -1, // TODO: should be null
+                score: null,
               },
             });
             reply.send(pouleMatchTeam2);

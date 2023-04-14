@@ -33,11 +33,16 @@ server.register(
       }
     });
     instance.get("/teams/:id", async (request: any, reply) => {
-      const team = prisma.team.findFirst({
+      const team = await prisma.team.findFirst({
         where: {
-          id: request.params.id,
+          id: parseInt(request.params.id),
         },
       });
+
+      if (!team) {
+        reply.code(404).send();
+        return;
+      }
 
       reply.send(team);
     });

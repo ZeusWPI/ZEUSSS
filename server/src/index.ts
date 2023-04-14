@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import {PrismaClient} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
 
@@ -45,7 +45,61 @@ server.register(
       // TODO: list of poules, joined with teams and poule_match_teams
     });
     instance.get("/poules/:id", async (request: any, reply) => {
-      // TODO: implement
+      type PouleTeam = {
+        id: number;
+        name: string;
+        league: string;
+      };
+
+      type CompletePoule = {
+        id: number;
+        name: string;
+        team: PouleTeam[];
+        matches: string;
+      };
+
+      const id_param = parseInt(request.params.id);
+
+      const poule = await prisma.poule.findFirst({
+        where: {
+          id: id_param,
+        },
+        select: {
+          id: true,
+          name: true,
+          PouleMatch: {
+            include: {
+              PouleMatchTeam: {
+                include: {
+                  team: {
+                    select: {
+                      id: true,
+                      name: true,
+                      league: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!poule) {
+        reply.code(404).send();
+        return;
+      }
+
+      const poule_teams = poule.PouleMatch.flatMap(pm => pm.PouleMatchTeam.map(pmt => pmt.team));
+
+      const complete_poule: CompletePoule = {
+        id: id_param,
+        name: poule.name,
+        team: poule_teams,
+        matches: `/poules/${poule.id}/matches`,
+      };
+
+      reply.send(complete_poule);
     });
     instance.get("/poules/:pouleId/matches", async (request, reply) => {
       // TODO: implement
@@ -162,10 +216,10 @@ server.register(
 
     next();
   },
-  {prefix: "/api"}
+  { prefix: "/api" }
 );
 
-server.listen({host: "0.0.0.0", port: 8080}, (err, address) => {
+server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

@@ -6,8 +6,8 @@ const barEntries = [
     name: "Poules"
   },
   {
-    link: "/brackets",
-    name: "Brackets"
+    link: "/bracket",
+    name: "Bracket"
   },
 ];
 

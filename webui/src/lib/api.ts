@@ -42,8 +42,23 @@ export const fetchPouleInfo = async () => {
   return data;
 };
 
-export const fetchPouleMatches = async (id: number): Promise<API.Match[]> => {
+export const fetchPouleMatches = async (id: number): Promise<API.ParsedMatch[]> => {
   const resp = await fetch(`/api/poules/${id}/matches`);
   const data: API.Match[] = await resp.json();
-  return resp.ok ? data : [];
+  if(!resp.ok) return [];
+  data.sort((m1, m2) => {
+    if (!m1.date && !m2.date) {
+      return 0;
+    }
+    if (!m1.date) {
+      return 1;
+    }
+    if (!m2.date) {
+      return -1;
+    }
+    return Date.parse(m2.date) - Date.parse(m1.date);
+  });
+  return data.map(m => {
+    return { ...m, date: m.date ? new Date(m.date) : undefined };
+  });
 };

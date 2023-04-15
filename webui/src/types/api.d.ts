@@ -9,6 +9,10 @@ declare namespace API {
     teams: MatchTeam[];
   }
 
+  type ParsedMatch = Omit<Match, "date"> & {
+    date?: Date;
+  }
+
   type BracketMatch = Match & {
     parentId: number;
   }

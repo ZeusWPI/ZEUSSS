@@ -23,11 +23,9 @@ const server = fastify({
 
 server.register(fastify_static, {
   root: path.join(process.cwd(), "public"),
-  prefix: "/public/",
-});
-
-server.get("/", (_, res) => {
-  res.sendFile("index.html");
+  prefix: "/",
+  index: "index.html",
+  wildcard: false,
 });
 
 server.register(
@@ -661,6 +659,10 @@ server.register(
   },
   { prefix: "/api" }
 );
+
+server.get("*", (_, res) => {
+  res.sendFile("index.html");
+});
 
 server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
   if (err) {

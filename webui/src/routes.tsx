@@ -4,6 +4,7 @@ import { AdminNavBar } from "./pages/admin/navbar";
 import { AdminPoulesPage } from "./pages/admin/poules";
 import { TeamAdminPage } from "./pages/admin/teams";
 import { LeagueSelectionOverlay } from "./pages/leagueSelectionOverlay";
+import { PublicNavBar } from "./pages/navbar";
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <MainPage />
+      },
+      {
+        path: "/",
+        element: <PublicNavBar />,
       },
       {
         path: "admin",

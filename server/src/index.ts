@@ -441,32 +441,61 @@ server.register(
       }
       reply.send(poule);
     });
-    instance.patch("/poules/:pouleId/matches/:matchId", async (request: any, reply) => {
-      if (request.body.date !== undefined) {
-        // Check if matchId belongs to pouleId
-        let pouleMatch = await prisma.pouleMatch.findFirst({
+    instance.patch<{
+      Body: { date: string; scores: Record<number, number> };
+      Params: { matchId: string; pouleId: string };
+    }>("/poules/:pouleId/matches/:matchId", async (request, reply) => {
+      if (request.body.date === undefined) {
+        return reply.status(400).send({
+          message: `The body is missing a date when the match was finished/played/registered`,
+        });
+      }
+      // Check if matchId belongs to pouleId
+      let pouleMatch = await prisma.pouleMatch.findFirst({
+        where: {
+          id: parseInt(request.params.matchId),
+          pouleId: parseInt(request.params.pouleId),
+        },
+      });
+      if (!pouleMatch) {
+        reply.status(400).send({
+          message: `Match with id ${request.params.matchId} not found in poule ${request.params.pouleId}.`,
+        });
+        return;
+      }
+
+      pouleMatch = await prisma.pouleMatch.update({
+        where: {
+          id: parseInt(request.params.matchId),
+        },
+        data: {
+          date: request.body.date,
+        },
+      });
+
+      for (const teamId in request.body.scores) {
+        const pouleMatchTeam = await prisma.pouleMatchTeam.findFirst({
           where: {
-            id: parseInt(request.params.matchId),
-            pouleId: parseInt(request.params.pouleId),
+            teamId: parseInt(teamId),
+            pouleMatchId: parseInt(request.params.matchId),
           },
         });
-        if (!pouleMatch) {
-          reply
-            .status(400)
-            .send({ message: `Match with id ${request.params.matchId} not found in poule ${request.params.pouleId}.` });
-          return;
+        if (!pouleMatchTeam) {
+          return reply.status(400).send({
+            message: `${teamId} is not a player in the match ${request.params.matchId} in pool ${request.params.pouleId}`,
+          });
         }
-
-        pouleMatch = await prisma.pouleMatch.update({
+        await prisma.pouleMatchTeam.update({
           where: {
-            id: parseInt(request.params.matchId),
+            id: parseInt(teamId),
           },
           data: {
-            date: request.body.date,
+            score: request.body.scores[Number(teamId)],
           },
         });
-        reply.send(pouleMatch);
       }
+
+      reply.send(pouleMatch);
     });
     instance.patch("/poules/:pouleId/matches/:matchId/teams/:teamId", async (request: any, reply) => {
       // Check if matchId belongs to pouleMatchId and pouleId

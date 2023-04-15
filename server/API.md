@@ -262,17 +262,10 @@ body:
 
 ```json
 {
-    date?: Date
-}
-```
-
-## /api/poules/{pouleId}/matches/{matchId}/teams/{teamId}
-
-body:
-
-```json
-{
-    score?: number
+    date?: Date,
+    scores: {
+        [teamId: number]: score
+    };
 }
 ```
 

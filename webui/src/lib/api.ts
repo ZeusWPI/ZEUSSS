@@ -15,3 +15,22 @@ export const deleteAPI = async (url: string, errMsg: string) => {
   }
   return data;
 };
+
+export const fetchPouleInfo = async () => {
+  const resp = await fetch("/api/poules");
+  const data: API.Poule[] = await resp.json();
+  if (!resp.ok) {
+    notifications.show({
+      message: "Failed to get poule info",
+      color: "red",
+    });
+    return [];
+  }
+  return data;
+};
+
+export const fetchPouleMatches = async (id: number) => {
+  const resp = await fetch(`/api/poules/${id}/matches`);
+  const data: API.Match = await resp.json();
+  return resp.ok ? data : [];
+};

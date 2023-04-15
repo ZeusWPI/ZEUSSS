@@ -7,11 +7,11 @@ const barEntries = [
     name: "Teams"
   },
   {
-    link: "/admin/poule",
+    link: "/admin/poules",
     name: "Poules"
   },
   {
-    link: "/admin/bracket",
+    link: "/admin/brackets",
     name: "Brackets"
   },
 ];
@@ -19,8 +19,8 @@ const barEntries = [
 export const AdminNavBar = () => {
   const location = useLocation();
   return (
-    <Container p={"xs"}>
-      <Center>
+    <Container p={"xs"} size={"xl"}>
+      <Center pb={"xs"}>
         <Group spacing={"xs"}>
           {barEntries.map(entry => (
             <Link to={entry.link} key={entry.link}>

@@ -1,8 +1,21 @@
 declare namespace API {
-  type BracketMatch = {
+  type MatchTeam = Team & {
+    score: number;
+  }
+
+  type Match = {
     id: number;
-    parentId: number;
     date: string;
-    teams: Brackets.BracketTeam[];
+    teams: MatchTeam[];
+  }
+
+  type BracketMatch = Match & {
+    parentId: number;
+  }
+
+  type Poule = {
+    id: number;
+    name: string;
+    teams: MatchTeam[];
   }
 }

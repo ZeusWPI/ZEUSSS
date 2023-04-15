@@ -2,20 +2,21 @@ import { TeamContext } from "@/lib/stores/teamContext";
 import { Select, SelectItem } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 
-// #004225
-
 declare type LeagueSelectionBox =  & {
   value: string;
   onChange: (val: string) => void;
 }
 
-export const LeagueSelectionBox = ({value, onChange}: LeagueSelectionBox) => {
+export const LeagueSelectionBox = ({value, onChange, filter}: Props.Selection<string>) => {
   const {leagues} = useContext(TeamContext);
-  const [query, setQuery] = useState("");
   const [leagueOptions, setLeagueOptions] = useState<SelectItem[]>([]);
 
   useEffect(() => {
-    setLeagueOptions(leagues.map(l => ({value: l, label: l})));
+    let filteredLeagues = leagues;
+    if (filter) {
+      filteredLeagues = filteredLeagues.filter(l => !filter.includes(l));
+    }
+    setLeagueOptions(filteredLeagues.map(l => ({value: l, label: l})));
   }, [leagues]);
 
   return (

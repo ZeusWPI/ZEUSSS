@@ -5,6 +5,7 @@ import { AdminPoulesPage } from "./pages/admin/poules";
 import { TeamAdminPage } from "./pages/admin/teams";
 import { LeagueSelectionOverlay } from "./pages/leagueSelectionOverlay";
 import { PublicNavBar } from "./pages/navbar";
+import { PoulePage } from "./pages/poules";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,12 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <PublicNavBar />,
+        children: [
+          {
+            path: "poules",
+            element: <PoulePage />
+          }
+        ]
       },
       {
         path: "admin",

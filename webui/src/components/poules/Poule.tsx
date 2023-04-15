@@ -1,6 +1,6 @@
 import { fetchPouleMatches } from "@/lib/api";
 import { queryClient } from "@/lib/query";
-import { Card, Center, Flex, Group, Loader, NumberInput, Paper, SimpleGrid, Stack, Text, Title, Divider } from "@mantine/core";
+import { Card, Center, Flex, Group, Loader, NumberInput, Paper, SimpleGrid, Stack, Text, Title, Divider, useMantineTheme } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
     staleTime: 30000,
   });
   const [editingMatchDate, setEditingMatchDate] = useState<Record<number, Date>>({});
+  const theme = useMantineTheme();
 
   const sortedTeams = useMemo(() => poule.teams.sort((t1, t2) => (t2?.score ?? 0) - (t1?.score ?? 0)), [poule.teams]);
 
@@ -84,10 +85,10 @@ export const Poule = ({poule, readonly}: PouleProps) => {
       <Card.Section inheritPadding py="xs" withBorder>
         <Title order={4}>{poule.name}</Title>
       </Card.Section>
-      <Card.Section inheritPadding py="xs" withBorder>
+      <Card.Section inheritPadding py="xs" withBorder bg={theme.colors.vek[7]}>
         <SimpleGrid cols={1} spacing="xs" verticalSpacing="xs">
           {sortedTeams.map(t => (
-            <Paper key={t.id} shadow="xs" p='xs'>
+            <Paper key={t.id} shadow="sm" p='xs'>
               <Flex align="center" justify="space-between">
                 <Text className="text-cutoff">{t.name}</Text>
                 <Text weight={"semibold"}>{t.score}</Text>
@@ -118,7 +119,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
           </Center>
         )}
         {matches && matches.map(match => (
-          <Paper shadow={"sm"} p="sm" key={`match-${match.id}`} withBorder mb={"xs"}>
+          <Paper shadow={"sm"} p="xs" key={`match-${match.id}`} withBorder mb={"xs"}>
             {match.teams.map((mTeam, i) => (
               <>
                 <Group key={`match-${match.id}-team-${mTeam.id}`} position={"apart"}>
@@ -126,7 +127,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
                     {mTeam.name}
                   </Text>
                   {readonly ? (
-                    <Text weight={"semibold"}>
+                    <Text weight={"bold"}>
                       {mTeam.score}
                     </Text>
                   ): (
@@ -139,7 +140,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
                     />
                   )}
                 </Group>
-                {i < match.teams.length-1 && (<Divider my='xs' />)}
+                {i < match.teams.length-1 && (<Divider my='xs' label="VS" />)}
               </>
             ))}
             {!readonly && (

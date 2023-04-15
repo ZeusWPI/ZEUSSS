@@ -1,6 +1,7 @@
 import { Poule } from "@/components/poules/Poule";
 import { fetchPouleInfo } from "@/lib/api";
-import { Center, Container, Flex, Loader, Stack, Text, Title } from "@mantine/core";
+import { Center, Flex, Loader, Stack, Text, Title } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 
 export const PoulePage = () => {
@@ -8,6 +9,7 @@ export const PoulePage = () => {
     queryKey: ["poules", "public"],
     queryFn: () => fetchPouleInfo()
   });
+  const mobile = useMediaQuery("(max-width: 670px)");
 
   if (isLoading) {
     return (
@@ -38,7 +40,7 @@ export const PoulePage = () => {
   }
 
   return (
-    <Flex wrap={"wrap"}>
+    <Flex wrap={"wrap"} justify={mobile ? "center" : "left"}>
       {data.map(p => <Poule key={`poule-${p.id}`} poule={p} readonly />)}
     </Flex>
   );

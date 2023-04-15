@@ -1,4 +1,5 @@
 import { Poule } from "@/components/poules/Poule";
+import { RecentPouleMatchBanner } from "@/components/RecentPouleMatchBanner";
 import { fetchPouleInfo } from "@/lib/api";
 import { TeamContext } from "@/lib/stores/teamContext";
 import { Center, Flex, Loader, Stack, Text, Title } from "@mantine/core";
@@ -43,8 +44,11 @@ export const PoulePage = () => {
   }
 
   return (
-    <Flex wrap={"wrap"} justify={mobile ? "center" : "left"}>
-      {data.map(p => <Poule key={`poule-${p.id}`} poule={p} readonly />)}
-    </Flex>
+    <>
+      <RecentPouleMatchBanner />
+      <Flex wrap={"wrap"} justify={mobile ? "center" : "left"}>
+        {data.map(p => <Poule key={`poule-${p.id}`} poule={p} readonly />)}
+      </Flex>
+    </>
   );
 };

@@ -62,3 +62,14 @@ export const fetchPouleMatches = async (id: number): Promise<API.ParsedMatch[]> 
     return { ...m, date: m.date ? new Date(m.date) : undefined };
   });
 };
+
+export const fetchRecentPouleMatches = async (league: string): Promise<API.Match[]> => {
+  const resp = await fetch(`/api/poules/matches?${new URLSearchParams({league, count: "10"})}`);
+  const data = await resp.json();
+  if (!resp.ok) {
+    throw new Response(data?.message ?? resp.statusText, {
+      status: resp.status,
+    });
+  }
+  return data;
+};

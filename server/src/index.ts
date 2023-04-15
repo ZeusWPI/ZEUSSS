@@ -54,7 +54,8 @@ server.register(
           PouleMatch: {
             include: {
               PouleMatchTeam: {
-                include: {
+                select: {
+                  score: true,
                   team: {
                     select: {
                       id: true,
@@ -70,10 +71,22 @@ server.register(
       });
 
       const mapped_poules = poules.map(p => {
+        const poule_teams = p.PouleMatch.reduce<TeamWScore[]>((arr, match) => {
+          match.PouleMatchTeam.forEach(dbTeam => {
+            const team = arr.find(t => t.id === dbTeam.team.id);
+            const score = dbTeam.score ?? 0;
+            if (team) {
+              team.score += score;
+            } else {
+              arr.push({ ...dbTeam.team, score });
+            }
+          });
+          return arr;
+        }, []);
         return {
           id: p.id,
           name: p.name,
-          teams: p.PouleMatch.flatMap(pm => pm.PouleMatchTeam.map(pmt => pmt.team)),
+          teams: poule_teams,
         };
       });
 

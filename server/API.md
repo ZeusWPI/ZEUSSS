@@ -43,7 +43,8 @@ returns:
             {
                 id: number,
                 name: string,
-                league: string
+                league: string,
+                score: number
             }, ...
         ]
     }

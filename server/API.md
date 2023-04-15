@@ -169,26 +169,6 @@ returns:
 ]
 ```
 
-## /api/bracket/matches/{matchId}
-
-returns:
-
-```json
-{
-    id: number = matchId,
-    parentId: number,
-    date: Date,
-    teams: [
-        {
-            id: number,
-            name: string,
-            score: number,
-            league: string,
-        }, ...
-    ]
-}
-```
-
 # POST Requests
 
 ## /api/teams

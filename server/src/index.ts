@@ -310,6 +310,9 @@ server.register(
         where: {
           bracketId,
         },
+        include: {
+          BracketMatchTeam: true,
+        },
       });
 
       bracketMatches.sort((m1, m2) => {
@@ -331,15 +334,14 @@ server.register(
           if (!rounds[roundIdx]) {
             rounds[roundIdx] = [];
           }
+          match.teams = match.BracketMatchTeam;
           delete match.children;
+          delete match.BracketMatchTeam;
           rounds[roundIdx].push(match);
         });
       };
       treeFlattener(bracketTree);
       return reply.status(200).send(rounds);
-    });
-    instance.get("/bracket/matches/:matchId", async (request, reply) => {
-      // TODO: implement
     });
 
     // POST requests
@@ -729,3 +731,4 @@ server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
   }
   console.log(`Server listening at ${address}`);
 });
+

@@ -1,3 +1,5 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import fastify from "fastify";
 import { type BracketMatch, PrismaClient } from "@prisma/client";
 import fastify_static from "@fastify/static";
@@ -5,7 +7,19 @@ import * as path from "path";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "./poules";
 
 const prisma = new PrismaClient();
-const server = fastify();
+const server = fastify({
+  disableRequestLogging: true,
+  logger: {
+    level: process.env.ENV === "production" ? "info" : "debug",
+    transport: {
+      target: "pino-pretty",
+      options: {
+        translateTime: "HH:MM:ss Z",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+});
 
 server.register(fastify_static, {
   root: path.join(process.cwd(), "public"),

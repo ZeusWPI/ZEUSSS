@@ -4,6 +4,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 import { LeagueSelectionBox } from "../LeagueSelectionBox";
+import { TeamModal } from "./TeamModal";
 
 export const CreateModalTeam = () => {
   const [name, setName] = useState("");
@@ -33,12 +34,15 @@ export const CreateModalTeam = () => {
   };
 
   return (
-    <>
-      <TextInput label={"Team name"} data-autofocus value={name} onChange={e => setName(e.currentTarget.value)} />
-      <LeagueSelectionBox value={league} onChange={setLeague} />
-      <Button onClick={createNewTeam} mt={"md"} disabled={btnDisabled}>
-        Create
-      </Button>
-    </>
+    <TeamModal
+      team={{name, league, id: 0}}
+      updateTeam={(t) => {
+        if (t.name) setName(t.name);
+        if (t.league) setLeague(t.league);
+      }}
+      btnDisabled={btnDisabled}
+      btnLabel={"Create"}
+      onClick={createNewTeam}
+    />
   );
 };

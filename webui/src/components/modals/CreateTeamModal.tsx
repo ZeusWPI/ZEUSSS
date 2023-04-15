@@ -15,6 +15,9 @@ export const CreateModalTeam = () => {
     setBtnDisabled(true);
     const resp = await fetch("/api/teams", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         name,
         league,

@@ -27,6 +27,9 @@ export const NewPoule = ({index}: {index: number}) => {
     }
     const resp = await fetch("/api/poules", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         name,
         teams: teams.map(t => t.id),

@@ -26,6 +26,9 @@ export const Poule = ({poule, readonly}: PouleProps) => {
     }
     const resp = await fetch(`/api/poules/${poule.id}/matches/${matchId}/teams/${teamId}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         score
       })
@@ -44,6 +47,9 @@ export const Poule = ({poule, readonly}: PouleProps) => {
     if (playDate.toString() === "Invalid Date") return;
     const resp = await fetch(`/api/poules/${poule.id}/matches/${matchId}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         date: playDate.toString(),
       })

@@ -17,6 +17,9 @@ export const UpdateTeamModal = ({team}: UpdateTeamModalProps) => {
     
     const resp = await fetch(`/api/teams/${team.id}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(editedTeam)
     });
     const data = await resp.json();

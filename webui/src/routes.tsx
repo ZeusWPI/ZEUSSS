@@ -3,24 +3,31 @@ import { MainPage } from "./pages";
 import { AdminNavBar } from "./pages/admin/navbar";
 import { AdminPoulesPage } from "./pages/admin/poules";
 import { TeamAdminPage } from "./pages/admin/teams";
+import { LeagueSelectionOverlay } from "./pages/leagueSelectionOverlay";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />,
-  },
-  {
-    path: "/admin",
-    element: <AdminNavBar />,
+    element: <LeagueSelectionOverlay />,
     children: [
       {
-        path: "teams",
-        element: <TeamAdminPage />
+        index: true,
+        element: <MainPage />
       },
       {
-        path: "poules",
-        element: <AdminPoulesPage />
+        path: "admin",
+        element: <AdminNavBar />,
+        children: [
+          {
+            path: "teams",
+            element: <TeamAdminPage />
+          },
+          {
+            path: "poules",
+            element: <AdminPoulesPage />
+          }
+        ]
       }
     ]
-  }
+  },
 ]);

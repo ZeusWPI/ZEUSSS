@@ -19,15 +19,15 @@ import "./styles/index.scss";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <TeamContextProvider>
-        <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
+    <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
+      <QueryClientProvider client={queryClient}>
+        <TeamContextProvider>
           <ModalsProvider>
             <Notifications />
             <RouterProvider router={router} />
           </ModalsProvider>
-        </MantineProvider>
-      </TeamContextProvider>
-    </QueryClientProvider>
+        </TeamContextProvider>
+      </QueryClientProvider>
+    </MantineProvider>
   </React.StrictMode>
 );

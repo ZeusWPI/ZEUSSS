@@ -2,12 +2,11 @@ import { TeamContext } from "@/lib/stores/teamContext";
 import { Select, SelectItem } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 
-declare type LeagueSelectionBox =  & {
-  value: string;
-  onChange: (val: string) => void;
+declare type LeagueSelectionBox = Props.Selection<string> & {
+  hideLabel?: boolean;
 }
 
-export const LeagueSelectionBox = ({value, onChange, filter}: Props.Selection<string>) => {
+export const LeagueSelectionBox = ({value, onChange, filter, hideLabel}: LeagueSelectionBox) => {
   const {leagues} = useContext(TeamContext);
   const [leagueOptions, setLeagueOptions] = useState<SelectItem[]>([]);
 
@@ -21,7 +20,7 @@ export const LeagueSelectionBox = ({value, onChange, filter}: Props.Selection<st
 
   return (
     <Select
-      label="Team League"
+      label={hideLabel ? undefined : "Team League"}
       data={leagueOptions}
       placeholder="Select the league"
       nothingFound="Nothing found"

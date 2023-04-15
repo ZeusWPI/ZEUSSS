@@ -1,18 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { createContext, FC, PropsWithChildren, useMemo } from "react";
+import { createContext, FC, PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { fetchTeams } from "../api";
-import { devTeamBrackets } from "../devData";
+import {Center, Stack, Text, Loader} from "@mantine/core";
 
 declare type TeamContextType = {
   teams: Team[];
   leagues: string[];
+  selectedLeague: string;
   getTeam: (id: number) => Team | undefined;
+  chooseLeague: (league: string) => void;
 }
 
 export const TeamContext = createContext<TeamContextType>({
   teams: [],
   leagues: [],
+  selectedLeague: "",
   getTeam: (_id) => undefined,
+  chooseLeague: (_league) => undefined,
 });
 
 export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) => {
@@ -20,6 +24,7 @@ export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) =
     queryKey: ["teams"],
     queryFn: () => fetchTeams(),
   });
+  const [selectedLeague, setSelectedLeague] = useState("");
 
   const getTeam = (id: number) => {
     return (data ?? []).find(t => t.id === id);
@@ -35,11 +40,19 @@ export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) =
     return leagues;
   }, [data]);
 
+  useEffect(() => {
+    if (!selectedLeague || !leagues.includes(selectedLeague)) {
+      setSelectedLeague(leagues[0]);
+    }
+  }, [leagues]);
+
   return (
     <TeamContext.Provider value={{
       getTeam,
       teams: data ?? [],
+      selectedLeague,
       leagues,
+      chooseLeague: setSelectedLeague
     }}>
       {isError && (
         <div>
@@ -48,9 +61,16 @@ export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) =
         </div>
       )}
       {isLoading && (
-        <div>
-          Loading teams...
-        </div>
+        <Center pt="xs">
+          <Stack spacing={"xs"}>
+            <Center>
+              <Loader color="vek" />
+            </Center>
+            <Text>
+              Loading teams...
+            </Text>
+          </Stack>
+        </Center>
       )}
       {!isError && !isLoading && (
         children

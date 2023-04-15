@@ -134,13 +134,14 @@ returns:
 }
 ```
 
-## /api/bracket
+## /api/bracket/{league}
 
 returns:
 
 ```json
 {
     rounds: number,
+    id: number,
 }
 ```
 
@@ -150,19 +151,21 @@ returns:
 
 ```json
 [
-    {
-        id: number,
-        parentId: number,
-        date: Date,
-        teams: [
-            {
-                id: number,
-                name: string,
-                score: number,
-                league: string,
-            }, ...
-        ]
-    }
+    [
+        {
+            id: number,
+            parentId: number,
+            date: Date,
+            teams: [
+                {
+                    id: number,
+                    name: string,
+                    score: number,
+                    league: string,
+                }, ...
+            ]
+        }
+    ]
 ]
 ```
 
@@ -242,14 +245,6 @@ body:
 {
     amount: number // amount of teams
     league: string
-}
-```
-
-returns:
-
-```json
-{
-    rounds: number,
 }
 ```
 

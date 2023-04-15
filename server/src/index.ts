@@ -76,9 +76,15 @@ server.register(
                     },
                   },
                 },
+                orderBy: {
+                  id: "asc",
+                },
               },
             },
           },
+        },
+        orderBy: {
+          id: "asc",
         },
       });
 
@@ -189,7 +195,13 @@ server.register(
                 },
               },
             },
+            orderBy: {
+              id: "asc",
+            },
           },
+        },
+        orderBy: {
+          id: "asc",
         },
       });
 
@@ -510,7 +522,7 @@ server.register(
           id: parseInt(request.params.matchId),
         },
         data: {
-          date: request.body.date,
+          date: new Date(request.body.date),
         },
       });
 

@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import fastify from "fastify";
-import { type BracketMatch, PrismaClient } from "@prisma/client";
+import { type BracketMatch, PrismaClient, PouleMatch, PouleMatchTeam } from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "./poules";
@@ -212,6 +212,35 @@ server.register(
 
       reply.send(pouleMatchesFormatted);
     });
+
+    instance.get<{ Querystring: { count: string } }>("/poules/matches", async (req, res) => {
+      const count = parseInt(req.query.count);
+      if (!count) {
+        return res.status(200).send([]);
+      }
+
+      const matches = await prisma.pouleMatch.findMany({
+        where: {
+          NOT: {
+            date: null,
+          },
+        },
+        include: {
+          PouleMatchTeam: true,
+        },
+        orderBy: {
+          date: "desc",
+        },
+        take: count,
+      });
+
+      return matches.map((match: PouleMatch & { teams?: PouleMatchTeam[]; PouleMatchTeam?: PouleMatchTeam[] }) => {
+        match.teams = match.PouleMatchTeam;
+        delete match.PouleMatchTeam;
+        return match;
+      });
+    });
+
     instance.get("/poules/:pouleId/matches/:matchId", async (request: any, reply) => {
       // Check if match exists in poule
       const pouleMatch = await prisma.pouleMatch.findFirst({

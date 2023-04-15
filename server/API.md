@@ -91,6 +91,30 @@ returns:
 ]
 ```
 
+## /api/poules/matches?count
+
+will give you the latest `count` amount of matches played in the pool, is usefull for our banner
+
+returns:
+
+```json
+[
+    {
+        id: number = matchId,
+        date: Date,
+        teams: [
+            {
+                id: number,
+                name: string,
+                score: number,
+                league: string
+            }, ...
+        ]
+    }, ...
+]
+```
+
+
 ## /api/poules/{id}/matches/{matchId}
 
 returns:

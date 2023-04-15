@@ -32,7 +32,7 @@ model PouleMatch {
   id             Int              @id @default(autoincrement())
   pouleId        Int
   poule          Poule            @relation(fields: [pouleId], references: [id])
-  date           DateTime?  
+  date           DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   PouleMatchTeam PouleMatchTeam[]
@@ -49,16 +49,24 @@ model PouleMatchTeam {
   updatedAt    DateTime   @updatedAt
 }
 
+model bracket {
+  id     Int    @id @default(autoincrement())
+  league String
+  rounds Int
+  BracketMatch BracketMatch[]
+}
+
 model BracketMatch {
   id               Int                @id @default(autoincrement())
   parentId         Int?
-  league           String
   parent           BracketMatch?      @relation("parent", fields: [parentId], references: [id])
   children         BracketMatch[]     @relation("parent")
   date             DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   BracketMatchTeam BracketMatchTeam[]
+  bracketId        Int
+  bracket          bracket            @relation(fields: [bracketId], references: [id])
 }
 
 model BracketMatchTeam {

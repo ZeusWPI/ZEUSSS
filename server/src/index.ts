@@ -5,6 +5,7 @@ import { type BracketMatch, PrismaClient, PouleMatch, PouleMatchTeam } from "@pr
 import fastify_static from "@fastify/static";
 import * as path from "path";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "./poules";
+import { createBracketTree } from "./bracket";
 
 const prisma = new PrismaClient();
 const server = fastify({
@@ -292,11 +293,50 @@ server.register(
 
       reply.send(pouleMatchFormatted);
     });
-    instance.get("/bracket", async (request, reply) => {
-      // TODO: implement
+    instance.get<{ Params: { league: string } }>("/bracket/:league", async (request, reply) => {
+      const bracket = await prisma.bracket.findFirst({
+        where: {
+          league: request.params.league,
+        },
+      });
+      if (!bracket) {
+        return reply.status(404).send({ message: `No bracket found for this league: ${request.params.league}` });
+      }
+      return reply.status(200).send(bracket);
     });
-    instance.get("/bracket/matches", async (request, reply) => {
-      // TODO: implement
+    instance.get<{ Params: { id: string } }>("/bracket/:id/matches", async (request, reply) => {
+      const bracketId = parseInt(request.params.id);
+      const bracketMatches = await prisma.bracketMatch.findMany({
+        where: {
+          bracketId,
+        },
+      });
+
+      bracketMatches.sort((m1, m2) => {
+        if (m1.parentId === null) return -1;
+        if (m2.parentId === null) return 1;
+        return m2.parentId - m1.parentId;
+      });
+
+      // Make frontend life easier
+      const bracketTree: Brackets.MatchNode[][] = createBracketTree(bracketMatches);
+
+      // move tree to 2d array
+      const rounds: BracketMatch[][] = [];
+      const treeFlattener = (tree: Brackets.MatchNode[], roundIdx = 0) => {
+        tree.forEach(match => {
+          if (match.children) {
+            treeFlattener(match.children, roundIdx + 1);
+          }
+          if (!rounds[roundIdx]) {
+            rounds[roundIdx] = [];
+          }
+          delete match.children;
+          rounds[roundIdx].push(match);
+        });
+      };
+      treeFlattener(bracketTree);
+      return reply.status(200).send(rounds);
     });
     instance.get("/bracket/matches/:matchId", async (request, reply) => {
       // TODO: implement

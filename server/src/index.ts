@@ -293,22 +293,10 @@ server.register(
 
       reply.send(pouleMatchFormatted);
     });
-    instance.get<{ Params: { league: string } }>("/bracket/:league", async (request, reply) => {
-      const bracket = await prisma.bracket.findFirst({
-        where: {
-          league: request.params.league,
-        },
-      });
-      if (!bracket) {
-        return reply.status(404).send({ message: `No bracket found for this league: ${request.params.league}` });
-      }
-      return reply.status(200).send(bracket);
-    });
-    instance.get<{ Params: { id: string } }>("/bracket/:id/matches", async (request, reply) => {
-      const bracketId = parseInt(request.params.id);
+    instance.get<{ Params: { league: string } }>("/bracket/:league/matches", async (request, reply) => {
       const bracketMatches = await prisma.bracketMatch.findMany({
         where: {
-          bracketId,
+          league: request.params.league,
         },
         include: {
           BracketMatchTeam: true,
@@ -341,7 +329,7 @@ server.register(
         });
       };
       treeFlattener(bracketTree);
-      return reply.status(200).send(rounds);
+      return reply.status(200).send(rounds.reverse());
     });
 
     // POST requests
@@ -395,13 +383,13 @@ server.register(
         return;
       }
 
-      const bracketForLeague = await prisma.bracket.findFirst({
+      const bracketMatchForLeague = await prisma.bracketMatch.findFirst({
         where: {
-          league: league,
+          league,
         },
       });
 
-      if (bracketForLeague) {
+      if (!bracketMatchForLeague) {
         reply.status(400).send({ message: "league already has a bracket" });
         return;
       }
@@ -410,12 +398,6 @@ server.register(
         reply.status(400).send({ message: "amount should be a power of 2" });
         return;
       }
-      const bracket = await prisma.bracket.create({
-        data: {
-          league,
-          rounds: Math.round(Math.log2(amount)),
-        },
-      });
 
       const initializeBracketRecursive = async (n: number, parent: null | BracketMatch) => {
         if (n === 1) {
@@ -424,7 +406,7 @@ server.register(
           await prisma.bracketMatch.create({
             data: {
               parentId: parent === null ? null : parent.id,
-              bracketId: bracket.id,
+              league,
               date: null,
             },
           });
@@ -432,7 +414,7 @@ server.register(
           const new_parent = await prisma.bracketMatch.create({
             data: {
               parentId: parent === null ? null : parent.id,
-              bracketId: bracket.id,
+              league,
               date: null,
             },
           });
@@ -731,4 +713,3 @@ server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
   }
   console.log(`Server listening at ${address}`);
 });
-

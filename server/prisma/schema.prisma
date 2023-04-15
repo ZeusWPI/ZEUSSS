@@ -32,7 +32,7 @@ model Poule {
 model PouleMatch {
   id             Int              @id @default(autoincrement())
   pouleId        Int
-  poule          Poule            @relation(fields: [pouleId], references: [id])
+  poule          Poule            @relation(fields: [pouleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   date           DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
@@ -42,9 +42,9 @@ model PouleMatch {
 model PouleMatchTeam {
   id           Int        @id @default(autoincrement())
   pouleMatchId Int
-  pouleMatch   PouleMatch @relation(fields: [pouleMatchId], references: [id])
+  pouleMatch   PouleMatch @relation(fields: [pouleMatchId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   teamId       Int
-  team         Team       @relation(fields: [teamId], references: [id])
+  team         Team       @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   score        Int?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -54,7 +54,7 @@ model BracketMatch {
   id               Int                @id @default(autoincrement())
   league           String
   parentId         Int?
-  parent           BracketMatch?      @relation("parent", fields: [parentId], references: [id])
+  parent           BracketMatch?      @relation("parent", fields: [parentId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   children         BracketMatch[]     @relation("parent")
   date             DateTime?
   createdAt        DateTime           @default(now())
@@ -65,9 +65,9 @@ model BracketMatch {
 model BracketMatchTeam {
   id             Int          @id @default(autoincrement())
   bracketMatchId Int
-  bracketMatch   BracketMatch @relation(fields: [bracketMatchId], references: [id])
+  bracketMatch   BracketMatch @relation(fields: [bracketMatchId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   teamId         Int
-  team           Team         @relation(fields: [teamId], references: [id])
+  team           Team         @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   score          Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

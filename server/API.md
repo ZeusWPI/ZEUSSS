@@ -91,7 +91,7 @@ returns:
 ]
 ```
 
-## /api/poules/matches?count
+## /api/poules/matches?count&league
 
 will give you the latest `count` amount of matches played in the pool, is usefull for our banner
 
@@ -199,6 +199,7 @@ body:
 ```json
 {
     name: string,
+    league: string,
     teams: number[] // ids of the teams
 }
 ```

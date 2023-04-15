@@ -59,7 +59,7 @@ server.register(
 
       reply.send(team);
     });
-    instance.get("/poules", async (request, reply) => {
+    instance.get<{ Querystring: { league: string } }>("/poules", async (request, reply) => {
       const poules = await prisma.poule.findMany({
         select: {
           id: true,
@@ -83,6 +83,9 @@ server.register(
               },
             },
           },
+        },
+        where: {
+          league: request.query.league,
         },
         orderBy: {
           id: "asc",
@@ -224,7 +227,7 @@ server.register(
       reply.send(pouleMatchesFormatted);
     });
 
-    instance.get<{ Querystring: { count: string } }>("/poules/matches", async (req, res) => {
+    instance.get<{ Querystring: { count: string; league: string } }>("/poules/matches", async (req, res) => {
       const count = parseInt(req.query.count);
       if (!count) {
         return res.status(200).send([]);
@@ -232,8 +235,13 @@ server.register(
 
       const matches = await prisma.pouleMatch.findMany({
         where: {
-          NOT: {
-            date: null,
+          AND: {
+            NOT: {
+              date: null,
+            },
+            poule: {
+              league: req.query.league,
+            },
           },
         },
         include: {
@@ -343,7 +351,7 @@ server.register(
       });
       reply.send(team);
     });
-    instance.post("/poules", async (request: any, reply) => {
+    instance.post<{ Body: { name: string; league: string; teams: number[] } }>("/poules", async (request, reply) => {
       // Check if at least 2 teams are given
       if (request.body.teams.length < 2) {
         reply.status(400).send({ message: "At least 2 teams are required." });
@@ -367,6 +375,7 @@ server.register(
       const poule = await prisma.poule.create({
         data: {
           name: request.body.name,
+          league: request.body.league,
         },
       });
 

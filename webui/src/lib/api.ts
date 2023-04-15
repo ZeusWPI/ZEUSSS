@@ -16,6 +16,19 @@ export const deleteAPI = async (url: string, errMsg: string) => {
   return data;
 };
 
+export const fetchTeams = async () => {
+  const resp = await fetch("/api/teams");
+  const data: Team[] = await resp.json();
+  if (!resp.ok) {
+    notifications.show({
+      message: "Failed to fetch teams",
+      color: "red",
+    });
+    return [];
+  }
+  return data;
+};
+
 export const fetchPouleInfo = async () => {
   const resp = await fetch("/api/poules");
   const data: API.Poule[] = await resp.json();
@@ -29,8 +42,8 @@ export const fetchPouleInfo = async () => {
   return data;
 };
 
-export const fetchPouleMatches = async (id: number) => {
+export const fetchPouleMatches = async (id: number): Promise<API.Match[]> => {
   const resp = await fetch(`/api/poules/${id}/matches`);
-  const data: API.Match = await resp.json();
+  const data: API.Match[] = await resp.json();
   return resp.ok ? data : [];
 };

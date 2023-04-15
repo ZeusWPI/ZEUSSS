@@ -1,11 +1,11 @@
 declare namespace API {
   type MatchTeam = Team & {
-    score: number;
+    score?: number;
   }
 
   type Match = {
     id: number;
-    date: string;
+    date?: string;
     teams: MatchTeam[];
   }
 

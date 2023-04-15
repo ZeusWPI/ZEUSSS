@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createContext, FC, PropsWithChildren, useMemo } from "react";
+import { fetchTeams } from "../api";
 import { devTeamBrackets } from "../devData";
 
 declare type TeamContextType = {
@@ -17,7 +18,7 @@ export const TeamContext = createContext<TeamContextType>({
 export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) => {
   const {data, isLoading, isError, error} = useQuery<Team[], Error>({
     queryKey: ["teams"],
-    queryFn: () => devTeamBrackets,
+    queryFn: () => fetchTeams(),
   });
 
   const getTeam = (id: number) => {

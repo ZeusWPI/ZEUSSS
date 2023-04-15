@@ -1,14 +1,13 @@
 import { NewPoule } from "@/components/poules/NewPoule";
 import { Poule } from "@/components/poules/Poule";
 import { fetchPouleInfo } from "@/lib/api";
-import { devPouleData } from "@/lib/devData";
-import { Center, Flex, Loader, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Center, Flex, Loader, Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 export const AdminPoulesPage = () => {
   const {isLoading, isError, error, data} = useQuery<API.Poule[], Error>({
     queryKey: ["poules", "admin"],
-    queryFn: () => devPouleData // fetchPouleInfo()
+    queryFn: () => fetchPouleInfo()
   });
 
   if (isLoading) {

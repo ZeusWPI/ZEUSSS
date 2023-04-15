@@ -8,8 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 
 export const PoulePage = () => {
-  const {selectedLeague} = useContext(TeamContext);
-  const {isLoading, isError, error, data} = useQuery<API.Poule[], Error>({
+  const { selectedLeague } = useContext(TeamContext);
+  const { isLoading, isError, error, data } = useQuery<API.Poule[], Error>({
     queryKey: ["poules", "public"],
     queryFn: () => fetchPouleInfo(selectedLeague),
   });
@@ -22,9 +22,7 @@ export const PoulePage = () => {
           <Center>
             <Loader />
           </Center>
-          <Text>
-            Fetching poule data
-          </Text>
+          <Text>Fetching poule data</Text>
         </Stack>
       </Center>
     );
@@ -33,12 +31,8 @@ export const PoulePage = () => {
   if (isError) {
     return (
       <>
-        <Title order={3}>
-        Failed to retrieve poule information. Try reloading the page
-        </Title>
-        <Text>
-          {error.message}
-        </Text>
+        <Title order={3}>Failed to retrieve poule information. Try reloading the page</Title>
+        <Text>{error.message}</Text>
       </>
     );
   }
@@ -47,7 +41,9 @@ export const PoulePage = () => {
     <>
       <RecentPouleMatchBanner />
       <Flex wrap={"wrap"} justify={mobile ? "center" : "left"}>
-        {data.map(p => <Poule key={`poule-${p.id}`} poule={p} readonly />)}
+        {data.map(p => (
+          <Poule key={`poule-${p.id}`} poule={p} readonly />
+        ))}
       </Flex>
     </>
   );

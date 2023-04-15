@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <MainPage />
+        element: <MainPage />,
       },
       {
         path: "/",
@@ -22,9 +22,9 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "poules",
-            element: <PoulePage />
-          }
-        ]
+            element: <PoulePage />,
+          },
+        ],
       },
       {
         path: "admin",
@@ -32,14 +32,14 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "teams",
-            element: <TeamAdminPage />
+            element: <TeamAdminPage />,
           },
           {
             path: "poules",
-            element: <AdminPoulesPage />
-          }
-        ]
-      }
-    ]
+            element: <AdminPoulesPage />,
+          },
+        ],
+      },
+    ],
   },
 ]);

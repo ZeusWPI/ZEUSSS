@@ -3,5 +3,5 @@ declare namespace Props {
     value?: T;
     onChange: (val: T) => void;
     filter?: T[];
-  }
+  };
 }

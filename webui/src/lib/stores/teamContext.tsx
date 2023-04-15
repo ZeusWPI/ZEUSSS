@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createContext, FC, PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { fetchTeams } from "../api";
-import {Center, Stack, Text, Loader} from "@mantine/core";
+import { Center, Stack, Text, Loader } from "@mantine/core";
 
 declare type TeamContextType = {
   teams: Team[];
@@ -9,18 +9,18 @@ declare type TeamContextType = {
   selectedLeague: string;
   getTeam: (id: number) => Team | undefined;
   chooseLeague: (league: string) => void;
-}
+};
 
 export const TeamContext = createContext<TeamContextType>({
   teams: [],
   leagues: [],
   selectedLeague: "",
-  getTeam: (_id) => undefined,
-  chooseLeague: (_league) => undefined,
+  getTeam: _id => undefined,
+  chooseLeague: _league => undefined,
 });
 
-export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) => {
-  const {data, isLoading, isError, error} = useQuery<Team[], Error>({
+export const TeamContextProvider: FC<PropsWithChildren<object>> = ({ children }) => {
+  const { data, isLoading, isError, error } = useQuery<Team[], Error>({
     queryKey: ["teams"],
     queryFn: () => fetchTeams(),
   });
@@ -36,7 +36,7 @@ export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) =
     data?.forEach(team => {
       if (leagues.includes(team.league)) return;
       leagues.push(team.league);
-    } );
+    });
     return leagues;
   }, [data]);
 
@@ -47,16 +47,20 @@ export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) =
   }, [leagues]);
 
   return (
-    <TeamContext.Provider value={{
-      getTeam,
-      teams: data ?? [],
-      selectedLeague,
-      leagues,
-      chooseLeague: setSelectedLeague
-    }}>
+    <TeamContext.Provider
+      value={{
+        getTeam,
+        teams: data ?? [],
+        selectedLeague,
+        leagues,
+        chooseLeague: setSelectedLeague,
+      }}
+    >
       {isError && (
         <div>
-          <p><>Failed to load teams: {error}</></p>
+          <p>
+            <>Failed to load teams: {error}</>
+          </p>
           <p>Reload the site</p>
         </div>
       )}
@@ -66,15 +70,11 @@ export const TeamContextProvider: FC<PropsWithChildren<object>> = ({children}) =
             <Center>
               <Loader color="vek" />
             </Center>
-            <Text>
-              Loading teams...
-            </Text>
+            <Text>Loading teams...</Text>
           </Stack>
         </Center>
       )}
-      {!isError && !isLoading && (
-        children
-      )}
+      {!isError && !isLoading && children}
     </TeamContext.Provider>
   );
 };

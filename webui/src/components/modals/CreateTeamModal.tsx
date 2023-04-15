@@ -21,14 +21,14 @@ export const CreateModalTeam = () => {
       body: JSON.stringify({
         name,
         league,
-      })
+      }),
     });
     setBtnDisabled(false);
     if (!resp.ok) {
       notifications.show({
         title: "Failed to add team",
         color: "red",
-        message: `The API gave an error while adding a team: ${resp.statusText} (${resp.status})`
+        message: `The API gave an error while adding a team: ${resp.statusText} (${resp.status})`,
       });
       return;
     }
@@ -38,8 +38,8 @@ export const CreateModalTeam = () => {
 
   return (
     <TeamModal
-      team={{name, league, id: 0}}
-      updateTeam={(t) => {
+      team={{ name, league, id: 0 }}
+      updateTeam={t => {
         if (t.name) setName(t.name);
         if (t.league) setLeague(t.league);
       }}

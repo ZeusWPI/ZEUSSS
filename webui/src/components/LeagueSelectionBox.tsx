@@ -5,10 +5,10 @@ import { useContext, useEffect, useState } from "react";
 declare type LeagueSelectionBox = Props.Selection<string> & {
   hideLabel?: boolean;
   readonly?: boolean;
-}
+};
 
-export const LeagueSelectionBox = ({value, onChange, filter, hideLabel, readonly}: LeagueSelectionBox) => {
-  const {leagues} = useContext(TeamContext);
+export const LeagueSelectionBox = ({ value, onChange, filter, hideLabel, readonly }: LeagueSelectionBox) => {
+  const { leagues } = useContext(TeamContext);
   const [leagueOptions, setLeagueOptions] = useState<SelectItem[]>([]);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export const LeagueSelectionBox = ({value, onChange, filter, hideLabel, readonly
     if (filter) {
       filteredLeagues = filteredLeagues.filter(l => !filter.includes(l));
     }
-    setLeagueOptions(filteredLeagues.map(l => ({value: l, label: l})));
+    setLeagueOptions(filteredLeagues.map(l => ({ value: l, label: l })));
   }, [leagues]);
 
   return (
@@ -30,7 +30,7 @@ export const LeagueSelectionBox = ({value, onChange, filter, hideLabel, readonly
       getCreateLabel={(query: string) => `+ Create ${query}`}
       onCreate={(query: string) => {
         const item = { value: query, label: query };
-        setLeagueOptions((current) => [...current, item]);
+        setLeagueOptions(current => [...current, item]);
         return item;
       }}
       value={value}

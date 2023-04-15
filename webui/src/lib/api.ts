@@ -30,7 +30,7 @@ export const fetchTeams = async () => {
 };
 
 export const fetchPouleInfo = async (league: string) => {
-  const resp = await fetch(`/api/poules?${new URLSearchParams({league})}`);
+  const resp = await fetch(`/api/poules?${new URLSearchParams({ league })}`);
   const data: API.Poule[] = await resp.json();
   if (!resp.ok) {
     notifications.show({
@@ -45,7 +45,7 @@ export const fetchPouleInfo = async (league: string) => {
 export const fetchPouleMatches = async (id: number): Promise<API.ParsedMatch[]> => {
   const resp = await fetch(`/api/poules/${id}/matches`);
   const data: API.Match[] = await resp.json();
-  if(!resp.ok) return [];
+  if (!resp.ok) return [];
   data.sort((m1, m2) => {
     if (!m1.date && !m2.date) {
       return 0;
@@ -64,7 +64,7 @@ export const fetchPouleMatches = async (id: number): Promise<API.ParsedMatch[]> 
 };
 
 export const fetchRecentPouleMatches = async (league: string): Promise<API.Match[]> => {
-  const resp = await fetch(`/api/poules/matches?${new URLSearchParams({league, count: "10"})}`);
+  const resp = await fetch(`/api/poules/matches?${new URLSearchParams({ league, count: "10" })}`);
   const data = await resp.json();
   if (!resp.ok) {
     throw new Response(data?.message ?? resp.statusText, {

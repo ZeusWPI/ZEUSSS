@@ -4,9 +4,10 @@ import { useContext, useEffect, useState } from "react";
 
 declare type LeagueSelectionBox = Props.Selection<string> & {
   hideLabel?: boolean;
+  readonly?: boolean;
 }
 
-export const LeagueSelectionBox = ({value, onChange, filter, hideLabel}: LeagueSelectionBox) => {
+export const LeagueSelectionBox = ({value, onChange, filter, hideLabel, readonly}: LeagueSelectionBox) => {
   const {leagues} = useContext(TeamContext);
   const [leagueOptions, setLeagueOptions] = useState<SelectItem[]>([]);
 
@@ -25,7 +26,7 @@ export const LeagueSelectionBox = ({value, onChange, filter, hideLabel}: LeagueS
       placeholder="Select the league"
       nothingFound="Nothing found"
       searchable
-      creatable
+      creatable={!readonly}
       getCreateLabel={(query: string) => `+ Create ${query}`}
       onCreate={(query: string) => {
         const item = { value: query, label: query };

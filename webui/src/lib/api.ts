@@ -29,8 +29,8 @@ export const fetchTeams = async () => {
   return data;
 };
 
-export const fetchPouleInfo = async () => {
-  const resp = await fetch("/api/poules");
+export const fetchPouleInfo = async (league: string) => {
+  const resp = await fetch(`/api/poules?${new URLSearchParams({league})}`);
   const data: API.Poule[] = await resp.json();
   if (!resp.ok) {
     notifications.show({

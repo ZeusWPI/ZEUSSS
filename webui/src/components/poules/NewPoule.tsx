@@ -1,16 +1,19 @@
 import { queryClient } from "@/lib/query";
+import { TeamContext } from "@/lib/stores/teamContext";
 import { Button, Card, Flex, SimpleGrid, Text, Title, Paper, ActionIcon, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { XIcon } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { TeamSelectionBox } from "../TeamSelectionBox";
 
-export const NewPoule = ({index}: {index: number}) => {
+export const NewPoule = ({index, assignedTeams}: {index: number; assignedTeams: Team[]}) => {
+  const {selectedLeague} = useContext(TeamContext);
   const [teams, setTeams] = useState<Team[]>([]);
   const [name, setName] = useState(`Poule ${index}`);
   const [teamToAdd, setTeamToAdd] = useState<Team|undefined>(undefined);
 
   const createPoule = async () => {
+    if (!selectedLeague) return;
     if (name.trim() === "") {
       notifications.show({
         message: "Poule name mag niet leeg zijn",
@@ -32,6 +35,7 @@ export const NewPoule = ({index}: {index: number}) => {
       },
       body: JSON.stringify({
         name,
+        league: selectedLeague,
         teams: teams.map(t => t.id),
       }),
     });
@@ -71,7 +75,7 @@ export const NewPoule = ({index}: {index: number}) => {
         ))}
       </SimpleGrid>
       <Flex align={"flex-end"}>
-        <TeamSelectionBox value={teamToAdd} onChange={setTeamToAdd} filter={teams} />
+        <TeamSelectionBox value={teamToAdd} onChange={setTeamToAdd} filter={teams.concat(...assignedTeams)} />
         <Button ml={"xs"} onClick={onTeamAddClick}>Add</Button>
       </Flex>
       <Button mt={"md"} onClick={createPoule} fullWidth>create</Button>

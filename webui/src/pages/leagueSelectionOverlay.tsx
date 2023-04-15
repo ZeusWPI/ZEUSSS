@@ -8,7 +8,7 @@ export const LeagueSelectionOverlay = () => {
   return (
     <>
       <div className="league-selection-overlay">
-        <LeagueSelectionBox value={selectedLeague} onChange={chooseLeague} hideLabel />
+        <LeagueSelectionBox value={selectedLeague} onChange={chooseLeague} hideLabel readonly/>
       </div>
       <Outlet />
     </>

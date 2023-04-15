@@ -1,13 +1,16 @@
 import { Poule } from "@/components/poules/Poule";
 import { fetchPouleInfo } from "@/lib/api";
+import { TeamContext } from "@/lib/stores/teamContext";
 import { Center, Flex, Loader, Stack, Text, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 
 export const PoulePage = () => {
+  const {selectedLeague} = useContext(TeamContext);
   const {isLoading, isError, error, data} = useQuery<API.Poule[], Error>({
     queryKey: ["poules", "public"],
-    queryFn: () => fetchPouleInfo()
+    queryFn: () => fetchPouleInfo(selectedLeague),
   });
   const mobile = useMediaQuery("(max-width: 670px)");
 

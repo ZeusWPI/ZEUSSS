@@ -9,7 +9,7 @@ export const TeamSelectionBox = ({value, onChange, filter}: Props.Selection<Team
   useEffect(() => {
     let teamCopy = [...teams];
     if (filter) {
-      teamCopy = teamCopy.filter(t => !filter.includes(t));
+      teamCopy = teamCopy.filter(t => !filter.find(t2 => t2.id === t.id));
     }
     setTeamOptions(teamCopy.map(t => ({value: String(t.id), label: t.name})));
   }, [teams, filter]);

@@ -1,3 +1,7 @@
+#root {
+  height:100vh;
+}
+
 .text-cutoff {
   white-space: nowrap;
   overflow: hidden;
@@ -10,4 +14,17 @@
   top: 0;
   left: 0;
   margin: 1rem;
+}
+
+.content-wrapper {
+  min-height: calc(100% - 7rem);
+}
+
+.footer {
+  height: 7rem;
+
+  & img {
+    width: 10vw;
+    object-fit: contain;
+  }
 }

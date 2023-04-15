@@ -5,7 +5,7 @@ import { DateTimePicker } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 declare type PouleProps = {
   poule: API.Poule;
@@ -18,6 +18,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
     queryFn: () => fetchPouleMatches(poule.id),
     staleTime: 30000,
   });
+  const [editingMatchDate, setEditingMatchDate] = useState<Record<number, Date>>({});
 
   const sortedTeams = useMemo(() => poule.teams.sort((t1, t2) => (t2?.score ?? 0) - (t1?.score ?? 0)), [poule.teams]);
 
@@ -45,15 +46,18 @@ export const Poule = ({poule, readonly}: PouleProps) => {
     };
   };
 
-  const updateMatchDate = async (matchId: number, playDate: Date) => {
-    if (playDate.toString() === "Invalid Date") return;
+  const updateMatchDate = async (matchId: number) => {
+    const date = editingMatchDate[matchId];
+    if (!date || date.toString() === "Invalid Date") {
+      return;
+    }
     const resp = await fetch(`/api/poules/${poule.id}/matches/${matchId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        date: playDate.toString(),
+        date: date.toISOString(),
       })
     });
     const data = await resp.json();
@@ -66,6 +70,14 @@ export const Poule = ({poule, readonly}: PouleProps) => {
       return;
     };
   };
+
+  useEffect(() => {
+    if (!matches) return;
+    setEditingMatchDate(matches.reduce<Record<number, Date>>((dates, match) => {
+      dates[match.id] = match.date ?? new Date();
+      return dates;
+    }, {}));
+  }, [matches]);
 
   return (
     <Card shadow="sm" padding="lg" m='xs' radius="md" withBorder w={"19rem"} style={{overflow: "visible"}}>
@@ -133,8 +145,11 @@ export const Poule = ({poule, readonly}: PouleProps) => {
             {!readonly && (
               <DateTimePicker
                 label="Match play moment"
-                value={new Date(match.date ?? Date.now())}
-                onDateChange={date => updateMatchDate(match.id, date)}
+                value={editingMatchDate[match.id]}
+                onChange={date => setEditingMatchDate(d => ({...d, [match.id]: date ?? new Date()}))}
+                submitButtonProps={{
+                  onClick: () => updateMatchDate(match.id),
+                }}
               />
             )}
           </Paper>

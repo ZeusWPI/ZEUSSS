@@ -1,10 +1,11 @@
 import { fetchPouleMatches } from "@/lib/api";
-import { Card, Center, Flex, Group, Loader, NumberInput, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { queryClient } from "@/lib/query";
+import { Card, Center, Flex, Group, Loader, NumberInput, Paper, SimpleGrid, Stack, Text, Title, Divider } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 declare type PouleProps = {
   poule: API.Poule;
@@ -13,7 +14,7 @@ declare type PouleProps = {
 
 export const Poule = ({poule, readonly}: PouleProps) => {
   const {isLoading, isError, error, data: matches} = useQuery({
-    queryKey: ["poule", "match", poule.id],
+    queryKey: ["poule", poule.id],
     queryFn: () => fetchPouleMatches(poule.id),
     staleTime: 30000,
   });
@@ -34,6 +35,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
       })
     });
     const data = await resp.json();
+    queryClient.invalidateQueries(["poule", poule.id]);
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update team score, ${teamId} - ${matchId}: ${data?.message ?? resp.statusText}`,
@@ -55,6 +57,7 @@ export const Poule = ({poule, readonly}: PouleProps) => {
       })
     });
     const data = await resp.json();
+    queryClient.invalidateQueries(["poule", poule.id]);
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update match date, ${matchId}: ${data?.message ?? resp.statusText}`,
@@ -103,25 +106,29 @@ export const Poule = ({poule, readonly}: PouleProps) => {
           </Center>
         )}
         {matches && matches.map(match => (
-          <Paper shadow={"sm"} p="sm" key={`match-${match.id}`}>
-            {match.teams.map(mTeam => (
-              <Group key={`match-${match.id}-team-${mTeam.id}`} position={"apart"}>
-                <Text>
-                  {mTeam.name}
-                </Text>
-                {readonly ? (
-                  <Text weight={"semibold"}>
-                    {mTeam.score}
+          <Paper shadow={"sm"} p="sm" key={`match-${match.id}`} withBorder mb={"xs"}>
+            {match.teams.map((mTeam, i) => (
+              <>
+                <Group key={`match-${match.id}-team-${mTeam.id}`} position={"apart"}>
+                  <Text>
+                    {mTeam.name}
                   </Text>
-                ): (
-                  <NumberInput
-                    min={0}
-                    placeholder="score"
-                    value={mTeam.score ?? 0}
-                    onBlur={(v) => updateTeamScore(match.id, mTeam.id, Number(v.currentTarget.value))}
-                  />
-                )}
-              </Group>
+                  {readonly ? (
+                    <Text weight={"semibold"}>
+                      {mTeam.score}
+                    </Text>
+                  ): (
+                    <NumberInput
+                      min={0}
+                      placeholder="score"
+                      value={mTeam.score ?? 0}
+                      onBlur={(v) => updateTeamScore(match.id, mTeam.id, Number(v.currentTarget.value))}
+                      w={"30%"}
+                    />
+                  )}
+                </Group>
+                {i < match.teams.length-1 && (<Divider my='xs' />)}
+              </>
             ))}
             {!readonly && (
               <DateTimePicker

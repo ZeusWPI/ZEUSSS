@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import fastify from "fastify";
-import { type BracketMatch, PrismaClient, PouleMatch, PouleMatchTeam } from "@prisma/client";
+import { type BracketMatch, PrismaClient, PouleMatch, PouleMatchTeam, Team } from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "./poules";
@@ -245,7 +245,11 @@ server.register(
           },
         },
         include: {
-          PouleMatchTeam: true,
+          PouleMatchTeam: {
+            include: {
+              team: true,
+            },
+          },
         },
         orderBy: {
           date: "desc",
@@ -253,11 +257,18 @@ server.register(
         take: count,
       });
 
-      return matches.map((match: PouleMatch & { teams?: PouleMatchTeam[]; PouleMatchTeam?: PouleMatchTeam[] }) => {
-        match.teams = match.PouleMatchTeam;
-        delete match.PouleMatchTeam;
-        return match;
-      });
+      return matches.map(
+        (
+          match: PouleMatch & {
+            teams?: (Team & { score: number | null })[];
+            PouleMatchTeam?: (PouleMatchTeam & { team: Team })[];
+          }
+        ) => {
+          match.teams = match.PouleMatchTeam?.map(pmt => ({ ...pmt.team, score: pmt.score })) ?? [];
+          delete match.PouleMatchTeam;
+          return match;
+        }
+      );
     });
 
     instance.get("/poules/:pouleId/matches/:matchId", async (request: any, reply) => {
@@ -367,6 +378,15 @@ server.register(
         }));
         if (!exists) {
           reply.status(400).send({ message: `Team with id ${teamId} does not exists.` });
+          return;
+        }
+        const alreadyAssigned = await prisma.pouleMatchTeam.findFirst({
+          where: {
+            teamId,
+          },
+        });
+        if (alreadyAssigned) {
+          reply.status(400).send({ message: `Team with id ${teamId} is already assigned to another pool.` });
           return;
         }
       }

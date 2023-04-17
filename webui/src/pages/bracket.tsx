@@ -7,8 +7,13 @@ import { AlertTriangle } from "lucide-react";
 import { useContext } from "react";
 
 export const BracketPage = () => {
-  const {selectedLeague} = useContext(TeamContext);
-  const {isLoading, isError, error, data: bracketData} = useQuery<Brackets.TreeNode | null, Error>({
+  const { selectedLeague } = useContext(TeamContext);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: bracketData,
+  } = useQuery<Brackets.TreeNode | null, Error>({
     queryKey: ["bracket", selectedLeague, "admin"],
     queryFn: () => fetchBracket(selectedLeague),
     staleTime: 30000,
@@ -22,9 +27,7 @@ export const BracketPage = () => {
           <Center>
             <Loader color="vek" />
           </Center>
-          <Text>
-            Loading bracket data
-          </Text>
+          <Text>Loading bracket data</Text>
         </Group>
       </Center>
     );
@@ -37,9 +40,7 @@ export const BracketPage = () => {
           <Center>
             <AlertTriangle color="orange" />
           </Center>
-          <Text weight={"bold"}>
-            Failed to load bracket data, try reloading the page
-          </Text>
+          <Text weight={"bold"}>Failed to load bracket data, try reloading the page</Text>
           <Text>
             {error.message}
             {error.stack}
@@ -54,8 +55,9 @@ export const BracketPage = () => {
       {!bracketData ? (
         <Center>
           <Text weight="bold">
-          The bracket for this league is undecided at the moment<br />
-          Come check back at a later time!
+            The bracket for this league is undecided at the moment
+            <br />
+            Come check back at a later time!
           </Text>
         </Center>
       ) : (

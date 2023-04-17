@@ -2,7 +2,12 @@ import { TeamContext } from "@/lib/stores/teamContext";
 import { Select, SelectItem, SelectProps } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 
-export const TeamSelectionBox = ({ value, onChange, filter, ...props }: Omit<SelectProps, "value"|"onChange"|"data"> & Props.Selection<Team>) => {
+export const TeamSelectionBox = ({
+  value,
+  onChange,
+  filter,
+  ...props
+}: Omit<SelectProps, "value" | "onChange" | "data"> & Props.Selection<Team>) => {
   const { teams, selectedLeague } = useContext(TeamContext);
   const [teamOptions, setTeamOptions] = useState<SelectItem[]>([]);
 

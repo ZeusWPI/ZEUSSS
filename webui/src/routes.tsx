@@ -26,9 +26,9 @@ export const router = createBrowserRouter([
             element: <PoulePage />,
           },
           {
-            path:"bracket",
-            element: <BracketPage />
-          }
+            path: "bracket",
+            element: <BracketPage />,
+          },
         ],
       },
       {
@@ -40,11 +40,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "poules",
-            element: <AdminPoulesPage />
+            element: <AdminPoulesPage />,
           },
           {
             path: "bracket",
-            element: <AdminBracketPage />
+            element: <AdminBracketPage />,
           },
         ],
       },

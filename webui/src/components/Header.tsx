@@ -20,18 +20,20 @@ export const Header = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Select league to view" style={{ overflow:"visible" }}>
-        <LeagueSelectionBox value={selectedLeague} onChange={chooseLeague} hideLabel readonly dropDownPosition="bottom" />
+      <Modal opened={opened} onClose={close} title="Select league to view" style={{ overflow: "visible" }}>
+        <LeagueSelectionBox
+          value={selectedLeague}
+          onChange={chooseLeague}
+          hideLabel
+          readonly
+          dropDownPosition="bottom"
+        />
       </Modal>
       <Flex justify={"space-between"} align="center" bg="vek" p="md" className="header">
         <div className="logo">
           <img src={"/sss.png"} />
         </div>
-        {onAdmin ? (
-          <AdminNavBar />
-        ) : (
-          <PublicNavBar />
-        )}
+        {onAdmin ? <AdminNavBar /> : <PublicNavBar />}
         {onMobile ? (
           <ActionIcon variant={"light"} color="white" onClick={open}>
             <BoxSelect size={18} />

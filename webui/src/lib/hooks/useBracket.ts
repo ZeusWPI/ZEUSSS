@@ -10,7 +10,7 @@ export const useBracket = (tree: Brackets.TreeNode) => {
       node.children.forEach(child => {
         unpackNodes(child, list, round + 1);
       });
-    };
+    }
     const nodeInfo = {
       date: node.date,
       id: node.id,
@@ -47,9 +47,9 @@ export const useBracket = (tree: Brackets.TreeNode) => {
     setFinal([node]);
   }, [tree]);
 
-  const finalSeeds = [{seeds: final, title: "Final"}];
-  const leftSeeds =  left.map((r, i) => ({title: `left-${i}`, seeds: r}));
-  const rightSeeds =  right.map((r, i) => ({title: `right-${i}`, seeds: r}));
+  const finalSeeds = [{ seeds: final, title: "Final" }];
+  const leftSeeds = left.map((r, i) => ({ title: `left-${i}`, seeds: r }));
+  const rightSeeds = right.map((r, i) => ({ title: `right-${i}`, seeds: r }));
 
   return { final: finalSeeds, left: leftSeeds, right: rightSeeds };
 };

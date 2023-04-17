@@ -8,12 +8,12 @@ import { TeamSelectionBox } from "./TeamSelectionBox";
 declare type BracketTeamInputProps = {
   team?: API.MatchTeam;
   disabled?: boolean;
-  onTeeamSelection: (team: Team, oldTeam: Team|undefined) => void;
+  onTeeamSelection: (team: Team, oldTeam: Team | undefined) => void;
   matchId?: number;
-}
+};
 
 export const BracketTeamInput = (props: BracketTeamInputProps) => {
-  const {selectedLeague} = useContext(TeamContext);
+  const { selectedLeague } = useContext(TeamContext);
   const [team, setTeam] = useState(props.team);
   const [score, setScore] = useState(props.team?.score ?? 0);
   const [disabled, setDisabled] = useState(false);
@@ -35,7 +35,7 @@ export const BracketTeamInput = (props: BracketTeamInputProps) => {
         score,
       }),
     });
-    queryClient.invalidateQueries({queryKey: ["bracket", selectedLeague]});
+    queryClient.invalidateQueries({ queryKey: ["bracket", selectedLeague] });
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update team score to ${score}`,
@@ -48,7 +48,17 @@ export const BracketTeamInput = (props: BracketTeamInputProps) => {
   return (
     <Group spacing={"xs"}>
       <TeamSelectionBox value={team} onChange={onTeamSelection} w={"70%"} label={""} disabled={props.disabled} />
-      {team && <NumberInput min={0} w={"20%"} value={score} onChange={e => setScore(e === "" ? 0 : e)} hideControls disabled={props.disabled || disabled} onBlur={updateScore} /> }
+      {team && (
+        <NumberInput
+          min={0}
+          w={"20%"}
+          value={score}
+          onChange={e => setScore(e === "" ? 0 : e)}
+          hideControls
+          disabled={props.disabled || disabled}
+          onBlur={updateScore}
+        />
+      )}
     </Group>
   );
 };

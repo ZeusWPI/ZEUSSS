@@ -9,8 +9,13 @@ import { AlertTriangle } from "lucide-react";
 import { useContext, useState } from "react";
 
 export const AdminBracketPage = () => {
-  const {selectedLeague} = useContext(TeamContext);
-  const {isLoading, isError, error, data: bracketData} = useQuery<Brackets.TreeNode | null, Error>({
+  const { selectedLeague } = useContext(TeamContext);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: bracketData,
+  } = useQuery<Brackets.TreeNode | null, Error>({
     queryKey: ["bracket", selectedLeague, "admin"],
     queryFn: () => fetchBracket(selectedLeague),
     staleTime: 30000,
@@ -22,11 +27,11 @@ export const AdminBracketPage = () => {
     if (2 ** Math.round(Math.log2(bracketSize)) !== bracketSize) {
       notifications.show({
         message: "De bracket groote moet een macht van 2 zijn (8,16,32,...)",
-        color: "red"
+        color: "red",
       });
       return;
     }
-    const resp = await fetch("/api/admin/bracket",{
+    const resp = await fetch("/api/admin/bracket", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,10 +43,10 @@ export const AdminBracketPage = () => {
     });
     const data = await resp.json();
     queryClient.invalidateQueries(["bracket", selectedLeague]);
-    if(!resp.ok) {
+    if (!resp.ok) {
       notifications.show({
         message: `Failed to generate bracket: ${data?.message ?? resp.statusText}`,
-        color: "red"
+        color: "red",
       });
     }
   };
@@ -53,9 +58,7 @@ export const AdminBracketPage = () => {
           <Center>
             <Loader color="vek" />
           </Center>
-          <Text>
-            Loading bracket data
-          </Text>
+          <Text>Loading bracket data</Text>
         </Group>
       </Center>
     );
@@ -68,9 +71,7 @@ export const AdminBracketPage = () => {
           <Center>
             <AlertTriangle color="orange" />
           </Center>
-          <Text weight={"bold"}>
-            Failed to load bracket data, try reloading the page
-          </Text>
+          <Text weight={"bold"}>Failed to load bracket data, try reloading the page</Text>
           <Text>
             {error.message}
             {error.stack}
@@ -85,7 +86,13 @@ export const AdminBracketPage = () => {
       {!bracketData ? (
         <Center>
           <Stack>
-            <NumberInput label={"Amount of teams playing in bracket"} description="Should be a power of 2 (eg. 8,16,32,...)" value={bracketSize} min={8} onChange={e => setBracketSize(e=== "" ? 8 : e)}  />
+            <NumberInput
+              label={"Amount of teams playing in bracket"}
+              description="Should be a power of 2 (eg. 8,16,32,...)"
+              value={bracketSize}
+              min={8}
+              onChange={e => setBracketSize(e === "" ? 8 : e)}
+            />
             <Button onClick={onBracketCreation}>Generate Bracket</Button>
           </Stack>
         </Center>

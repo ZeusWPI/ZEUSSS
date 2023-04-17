@@ -73,3 +73,16 @@ export const fetchRecentPouleMatches = async (league: string): Promise<API.Match
   }
   return data;
 };
+
+export const fetchBracket = async (league: string): Promise<Brackets.TreeNode|null> => {
+  if (league === "") return null;
+  const resp = await fetch(`/api/bracket/${league}/matches`);
+  const data = await resp.json();
+  if (!resp.ok) {
+    if (resp.status === 404) {
+      return null;
+    }
+    throw new Response(data?.message ??resp.statusText, {status: resp.status});
+  }
+  return data;
+};

@@ -7,17 +7,29 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
-    "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx,json}'",
+    "lint": "eslint --ext js,jsx,ts,tsx,json ./src",
+    "lint:fix": "eslint --ext js,jsx,ts,tsx,json ./src --fix",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@mantine/core": "^6.0.7",
+    "@mantine/dates": "^6.0.7",
+    "@mantine/hooks": "^6.0.7",
+    "@mantine/modals": "^6.0.7",
+    "@mantine/notifications": "^6.0.7",
+    "@sentry/browser": "^7.48.0",
     "@tanstack/react-query": "^4.28.0",
+    "dayjs": "^1.11.7",
+    "lucide-react": "^0.144.0",
     "react": "^18.2.0",
+    "react-brackets": "^0.4.7",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "sass": "^1.62.0"
   },
   "devDependencies": {
+    "@types/node": "^18.15.11",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",

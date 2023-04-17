@@ -3,7 +3,6 @@ import { AdminNavBar } from "@/pages/admin/navbar";
 import { PublicNavBar } from "@/pages/navbar";
 import { ActionIcon, Container, Flex, Modal } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { modals } from "@mantine/modals";
 import { BoxSelect } from "lucide-react";
 import { useContext, useMemo } from "react";
 import { Outlet, useLocation } from "react-router-dom";
@@ -19,7 +18,7 @@ export const Header = () => {
   }, [location]);
   const onBracket = useMemo(() => {
     return location.pathname.startsWith("/bracket");
-  });
+  }, [location]);
 
   return (
     <>

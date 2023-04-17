@@ -1,6 +1,6 @@
 import { queryClient } from "@/lib/query";
 import { TeamContext } from "@/lib/stores/teamContext";
-import { Button, Card, Flex, SimpleGrid, Text, Title, Paper, ActionIcon, TextInput } from "@mantine/core";
+import { Button, Card, Flex, SimpleGrid, Text, Paper, ActionIcon, TextInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { XIcon } from "lucide-react";
 import { useContext, useState } from "react";

@@ -7,7 +7,7 @@ export const TeamSelectionBox = ({
   onChange,
   filter,
   ...props
-}: Omit<SelectProps, "value" | "onChange" | "data"> & Props.Selection<Team>) => {
+}: Omit<SelectProps, "value" | "onChange" | "data" | "filter"> & Props.Selection<Team>) => {
   const { teams, selectedLeague } = useContext(TeamContext);
   const [teamOptions, setTeamOptions] = useState<SelectItem[]>([]);
 

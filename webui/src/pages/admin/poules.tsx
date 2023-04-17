@@ -9,7 +9,7 @@ import { useContext } from "react";
 export const AdminPoulesPage = () => {
   const { selectedLeague } = useContext(TeamContext);
   const { isLoading, isError, error, data } = useQuery<API.Poule[], Error>({
-    queryKey: ["poules", "admin"],
+    queryKey: ["poules", selectedLeague, "admin"],
     queryFn: () => fetchPouleInfo(selectedLeague),
   });
 

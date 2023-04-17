@@ -10,7 +10,7 @@ import { useContext } from "react";
 export const PoulePage = () => {
   const { selectedLeague } = useContext(TeamContext);
   const { isLoading, isError, error, data } = useQuery<API.Poule[], Error>({
-    queryKey: ["poules", "public"],
+    queryKey: ["poules", selectedLeague, "public"],
     queryFn: () => fetchPouleInfo(selectedLeague),
   });
   const mobile = useMediaQuery("(max-width: 670px)");

@@ -23,6 +23,7 @@ model Team {
 model Poule {
   id         Int          @id @default(autoincrement())
   name       String
+  league     String
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   PouleMatch PouleMatch[]
@@ -31,8 +32,8 @@ model Poule {
 model PouleMatch {
   id             Int              @id @default(autoincrement())
   pouleId        Int
-  poule          Poule            @relation(fields: [pouleId], references: [id])
-  date           DateTime
+  poule          Poule            @relation(fields: [pouleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  date           DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   PouleMatchTeam PouleMatchTeam[]
@@ -41,20 +42,23 @@ model PouleMatch {
 model PouleMatchTeam {
   id           Int        @id @default(autoincrement())
   pouleMatchId Int
-  pouleMatch   PouleMatch @relation(fields: [pouleMatchId], references: [id])
+  pouleMatch   PouleMatch @relation(fields: [pouleMatchId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   teamId       Int
-  team         Team       @relation(fields: [teamId], references: [id])
-  score        Int
+  team         Team       @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete:Cascade)
+  score        Int?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  @@unique([teamId, pouleMatchId])
 }
 
 model BracketMatch {
   id               Int                @id @default(autoincrement())
-  parentId         Int
-  parent           BracketMatch       @relation("parent", fields: [parentId], references: [id])
+  league           String
+  parentId         Int?
+  parent           BracketMatch?      @relation("parent", fields: [parentId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   children         BracketMatch[]     @relation("parent")
-  date             DateTime
+  date             DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   BracketMatchTeam BracketMatchTeam[]
@@ -63,10 +67,12 @@ model BracketMatch {
 model BracketMatchTeam {
   id             Int          @id @default(autoincrement())
   bracketMatchId Int
-  bracketMatch   BracketMatch @relation(fields: [bracketMatchId], references: [id])
+  bracketMatch   BracketMatch @relation(fields: [bracketMatchId], references: [id], onUpdate: Cascade, onDelete:Cascade)
   teamId         Int
-  team           Team         @relation(fields: [teamId], references: [id])
-  score          Int
+  team           Team         @relation(fields: [teamId], references: [id], onUpdate: Cascade, onDelete:Cascade)
+  score          Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  @@unique([teamId, bracketMatchId])
 }

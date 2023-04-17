@@ -1,31 +1,48 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import fastify from "fastify";
-import { PrismaClient } from "@prisma/client";
 import fastify_static from "@fastify/static";
 import * as path from "path";
+import * as Sentry from "@sentry/node";
+import { adminRouter, publicRouter } from "./controllers";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const prisma = new PrismaClient();
-const server = fastify();
+Sentry.init({ dsn: "https://979ee2ae77cd4906a5c50fb0bd6e36db@glitchtip.zeus.gent/9" });
+
+const server = fastify({
+  disableRequestLogging: true,
+  logger: {
+    level: process.env.ENV === "production" ? "info" : "debug",
+    transport: {
+      target: "pino-pretty",
+      options: {
+        translateTime: "HH:MM:ss Z",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+});
+
+server.setErrorHandler(async (error, request, reply) => {
+  // Logging locally
+  server.log.error(error);
+  // Sending error to be logged in Sentry
+  Sentry.captureException(error);
+  reply.status(500).send({ error: "Something went wrong" });
+});
 
 server.register(fastify_static, {
   root: path.join(process.cwd(), "public"),
-  prefix: "/public/",
+  prefix: "/",
+  index: "index.html",
+  wildcard: false,
 });
 
-server.get("/", (_, res) => {
+server.register(publicRouter, { prefix: "/api" });
+server.register(adminRouter, { prefix: "/api/admin" });
+
+server.get("*", (_, res) => {
   res.sendFile("index.html");
 });
-
-server.register(
-  (instance, opts, next) => {
-    instance.get("/teams", async (request, reply) => {
-      const teams = await prisma.team.findMany();
-      reply.send(teams);
-    });
-    next();
-  },
-  { prefix: "/api" }
-);
 
 server.listen({ host: "0.0.0.0", port: 8080 }, (err, address) => {
   if (err) {

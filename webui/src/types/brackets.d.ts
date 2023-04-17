@@ -10,7 +10,7 @@ declare namespace Brackets {
 
   type TreeNode = Match & {
     parentId: number | null,
-    teams: [],
+    teams: API.MatchTeam[],
     children?: TreeNode[];
   }
 }

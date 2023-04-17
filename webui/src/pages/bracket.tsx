@@ -8,10 +8,11 @@ import { useContext } from "react";
 
 export const BracketPage = () => {
   const {selectedLeague} = useContext(TeamContext);
-  const {isLoading, isError, error, data: bracketData} = useQuery<Brackets.Bracket, Error>({
-    queryKey: ["bracket", "admin"],
+  const {isLoading, isError, error, data: bracketData} = useQuery<Brackets.TreeNode | null, Error>({
+    queryKey: ["bracket", selectedLeague, "admin"],
     queryFn: () => fetchBracket(selectedLeague),
     staleTime: 30000,
+    enabled: !!selectedLeague && selectedLeague !== "",
   });
 
   if (isLoading) {
@@ -50,7 +51,7 @@ export const BracketPage = () => {
 
   return (
     <div>
-      {bracketData.length === 0 ? (
+      {!bracketData ? (
         <Center>
           <Text weight="bold">
           The bracket for this league is undecided at the moment<br />
@@ -58,7 +59,7 @@ export const BracketPage = () => {
           </Text>
         </Center>
       ) : (
-        <Bracket masterNode={bracketData} />
+        <Bracket masterNode={bracketData} readonly />
       )}
     </div>
   );

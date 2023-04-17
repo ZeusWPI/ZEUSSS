@@ -1,13 +1,13 @@
 import { TeamContext } from "@/lib/stores/teamContext";
-import { Select, SelectItem } from "@mantine/core";
+import { Select, SelectItem, SelectProps } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 
-export const TeamSelectionBox = ({ value, onChange, filter }: Props.Selection<Team>) => {
-  const { teams } = useContext(TeamContext);
+export const TeamSelectionBox = ({ value, onChange, filter, ...props }: Omit<SelectProps, "value"|"onChange"|"data"> & Props.Selection<Team>) => {
+  const { teams, selectedLeague } = useContext(TeamContext);
   const [teamOptions, setTeamOptions] = useState<SelectItem[]>([]);
 
   useEffect(() => {
-    let teamCopy = [...teams];
+    let teamCopy = teams.filter(t => t.league === selectedLeague);
     if (filter) {
       teamCopy = teamCopy.filter(t => !filter.find(t2 => t2.id === t.id));
     }
@@ -25,6 +25,7 @@ export const TeamSelectionBox = ({ value, onChange, filter }: Props.Selection<Te
       onChange={v => {
         onChange(teams.find(t => t.id === Number(v))!);
       }}
+      {...props}
     />
   );
 };

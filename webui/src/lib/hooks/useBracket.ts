@@ -1,11 +1,11 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 
 export const useBracket = (tree: Brackets.TreeNode) => {
-  const left = useRef<Brackets.Match[][]>([]);
-  const right = useRef<Brackets.Match[][]>([]);
-  const final = useRef<Brackets.Match[]>([]);
+  const [left, setLeft] = useState<Brackets.Match[][]>([]);
+  const [right, setRight] = useState<Brackets.Match[][]>([]);
+  const [final, setFinal] = useState<Brackets.Match[]>([]);
 
-  const unpackNodes = (node: Brackets.TreeNode, list: MutableRefObject<Brackets.Match[][]>, round = 0) => {
+  const unpackNodes = (node: Brackets.TreeNode, list: Brackets.Match[][], round = 0) => {
     if (node.children) {
       node.children.forEach(child => {
         unpackNodes(child, list, round + 1);
@@ -17,16 +17,13 @@ export const useBracket = (tree: Brackets.TreeNode) => {
       league: node.league,
       teams: node.teams,
     };
-    if (!list.current[round]) {
-      list.current[round] = [];
+    if (!list[round]) {
+      list[round] = [];
     }
-    list.current[round].push(nodeInfo);
+    list[round].push(nodeInfo);
   };
 
   useEffect(() => {
-    final.current = [];
-    left.current = [];
-    right.current = [];
     const node = {
       date: tree.date,
       id: tree.id,
@@ -36,18 +33,23 @@ export const useBracket = (tree: Brackets.TreeNode) => {
     if (tree.children) {
       if (tree.children[0]) {
         const leftBracket = tree.children[0];
-        unpackNodes(leftBracket, left);
-        left.current = left.current.reverse();
+        const leftMatches: Brackets.Match[][] = [];
+        unpackNodes(leftBracket, leftMatches);
+        setLeft(leftMatches.reverse());
       }
       if (tree.children[1]) {
         const rightBracket = tree.children[1];
-        unpackNodes(rightBracket, right);
-        right.current = right.current.reverse();
+        const rightMatches: Brackets.Match[][] = [];
+        unpackNodes(rightBracket, rightMatches);
+        setRight(rightMatches.reverse());
       }
     }
-    final.current = [node];
-    console.log(final, left, right);
+    setFinal([node]);
   }, [tree]);
 
-  return { final: [{seeds: final.current, title: ""}], left: left.current.map(r => ({title: "", seeds: r})), right: right.current.map(r => ({title: "", seeds: r})) };
+  const finalSeeds = [{seeds: final, title: "Final"}];
+  const leftSeeds =  left.map((r, i) => ({title: `left-${i}`, seeds: r}));
+  const rightSeeds =  right.map((r, i) => ({title: `right-${i}`, seeds: r}));
+
+  return { final: finalSeeds, left: leftSeeds, right: rightSeeds };
 };

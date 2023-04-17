@@ -48,6 +48,8 @@ model PouleMatchTeam {
   score        Int?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  @@unique([teamId, pouleMatchId])
 }
 
 model BracketMatch {
@@ -71,4 +73,6 @@ model BracketMatchTeam {
   score          Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  @@unique([teamId, bracketMatchId])
 }

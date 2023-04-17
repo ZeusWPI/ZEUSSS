@@ -17,6 +17,9 @@ export const Header = () => {
   const onAdmin = useMemo(() => {
     return location.pathname.startsWith("/admin");
   }, [location]);
+  const onBracket = useMemo(() => {
+    return location.pathname.startsWith("/bracket");
+  });
 
   return (
     <>
@@ -42,9 +45,13 @@ export const Header = () => {
           <LeagueSelectionBox value={selectedLeague} onChange={chooseLeague} hideLabel readonly />
         )}
       </Flex>
-      <Container p={"xs"} size={"xl"}>
+      {onBracket ? (
         <Outlet />
-      </Container>
+      ) : (
+        <Container p={"xs"} size={"xl"}>
+          <Outlet />
+        </Container>
+      )}
     </>
   );
 };

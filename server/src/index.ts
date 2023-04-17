@@ -322,7 +322,13 @@ server.register(
             include: {
               team: true,
             },
+            orderBy: {
+              id: "asc",
+            },
           },
+        },
+        orderBy: {
+          id: "asc",
         },
       });
       if (bracketMatches.length === 0) {

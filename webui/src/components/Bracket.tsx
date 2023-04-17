@@ -42,7 +42,7 @@ export const Bracket = ({masterNode: bracket, readonly}: {masterNode: Brackets.T
       if (oldTeam) {
         newIds = newIds.filter(tId => tId !== oldTeam.id);
       }
-      const resp = await fetch(`/api/bracket/matches/${matchInfo.id}`, {
+      const resp = await fetch(`/api/admin/bracket/matches/${matchInfo.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const Bracket = ({masterNode: bracket, readonly}: {masterNode: Brackets.T
     const updateMatchDate = async () => {
       if (!updatingDate || !matchInfo) return;
       setLoading(m => ({...m, [Number(matchInfo.id)]: true}));
-      const resp = await fetch(`/api/bracket/matches/${matchInfo.id}`, {
+      const resp = await fetch(`/api/admin/bracket/matches/${matchInfo.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

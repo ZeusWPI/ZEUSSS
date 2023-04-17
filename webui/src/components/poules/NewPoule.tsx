@@ -28,7 +28,7 @@ export const NewPoule = ({ index, assignedTeams }: { index: number; assignedTeam
       });
       return;
     }
-    const resp = await fetch("/api/poules", {
+    const resp = await fetch("/api/admin/poules", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

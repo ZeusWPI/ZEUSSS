@@ -15,7 +15,7 @@ export const UpdateTeamModal = ({ team }: UpdateTeamModalProps) => {
     if (btnDisabled) return;
     setBtnDisabled(true);
 
-    const resp = await fetch(`/api/teams/${team.id}`, {
+    const resp = await fetch(`/api/admin/teams/${team.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

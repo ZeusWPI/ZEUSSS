@@ -26,7 +26,7 @@ export const AdminBracketPage = () => {
       });
       return;
     }
-    const resp = await fetch("/api/bracket",{
+    const resp = await fetch("/api/admin/bracket",{
       method: "POST",
       headers: {
         "Content-Type": "application/json",

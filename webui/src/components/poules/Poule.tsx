@@ -46,7 +46,7 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
     if (Number.isNaN(score)) {
       return;
     }
-    const resp = await fetch(`/api/poules/${poule.id}/matches/${matchId}/teams/${teamId}`, {
+    const resp = await fetch(`/api/admin/poules/${poule.id}/matches/${matchId}/teams/${teamId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
     if (!date || date.toString() === "Invalid Date") {
       return;
     }
-    const resp = await fetch(`/api/poules/${poule.id}/matches/${matchId}`, {
+    const resp = await fetch(`/api/admin/poules/${poule.id}/matches/${matchId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

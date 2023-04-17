@@ -13,7 +13,7 @@ export const CreateModalTeam = () => {
 
   const createNewTeam = async () => {
     setBtnDisabled(true);
-    const resp = await fetch("/api/teams", {
+    const resp = await fetch("/api/admin/teams", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

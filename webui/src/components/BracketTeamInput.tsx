@@ -26,7 +26,7 @@ export const BracketTeamInput = (props: BracketTeamInputProps) => {
   const updateScore = async () => {
     if (disabled || !team || !props.matchId) return;
     setDisabled(true);
-    const resp = await fetch(`/api/bracket/matches/${props.matchId}/teams/${team.id}`, {
+    const resp = await fetch(`/api/admin/bracket/matches/${props.matchId}/teams/${team.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

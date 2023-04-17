@@ -6,6 +6,9 @@ import fastify_static from "@fastify/static";
 import * as path from "path";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "./poules";
 import { createBracketTree } from "./bracket";
+import * as Sentry from "@sentry/node";
+
+Sentry.init({ dsn: "https://979ee2ae77cd4906a5c50fb0bd6e36db@glitchtip.zeus.gent/9" });
 
 const prisma = new PrismaClient();
 const server = fastify({
@@ -20,6 +23,14 @@ const server = fastify({
       },
     },
   },
+});
+
+server.setErrorHandler(async (error, request, reply) => {
+  // Logging locally
+  server.log.error(error);
+  // Sending error to be logged in Sentry
+  Sentry.captureException(error);
+  reply.status(500).send({ error: "Something went wrong" });
 });
 
 server.register(fastify_static, {

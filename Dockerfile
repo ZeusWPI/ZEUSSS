@@ -15,6 +15,7 @@ WORKDIR /zeusss
 
 COPY ./server/package.json ./
 COPY ./server/yarn.lock ./
+COPY ./server/.env ./
 RUN yarn install
 
 COPY ./server ./

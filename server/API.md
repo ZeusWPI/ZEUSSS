@@ -171,7 +171,7 @@ returns:
 
 # POST Requests
 
-## /api/teams
+## /api/admin/teams
 
 body:
 
@@ -192,7 +192,7 @@ returns:
 }
 ```
 
-## /api/poules
+## /api/admin/poules
 
 body:
 
@@ -218,7 +218,7 @@ returns:
 }
 ```
 
-## /api/bracket
+## /api/admin/bracket
 
 body:
 
@@ -231,7 +231,7 @@ body:
 
 # PATCH Requests
 
-## /api/teams/{teamId}
+## /api/admin/teams/{teamId}
 
 body:
 
@@ -242,7 +242,7 @@ body:
 }
 ```
 
-## /api/poules/{pouleId}
+## /api/admin/poules/{pouleId}
 
 If old team ids != new team ids, remake poules only if amount of teams is different? make sure no matches played already. If no teams added only change name, dont update mathces.
 If only 1 team added, throw error.
@@ -256,7 +256,7 @@ body:
 }
 ```
 
-## /api/poules/{pouleId}/matches/{matchId}
+## /api/admin/poules/{pouleId}/matches/{matchId}
 
 body:
 
@@ -269,7 +269,7 @@ body:
 }
 ```
 
-## /api/bracket/matches/{matchId}
+## /api/admin/bracket/matches/{matchId}
 
 body:
 
@@ -280,7 +280,7 @@ body:
 }
 ```
 
-## /api/bracket/matches/{matchId}/teams/{teamId}
+## /api/admin/bracket/matches/{matchId}/teams/{teamId}
 
 body:
 
@@ -292,10 +292,10 @@ body:
 
 # DELETE Requests
 
-## /api/teams/{teamId}
+## /api/admin/teams/{teamId}
 
 This only works if the teams is NOT included in any poule or match
 
-## /api/poules/{pouleId}
+## /api/admin/poules/{pouleId}
 
 This only works if no matches have been played in the poule

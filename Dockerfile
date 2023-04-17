@@ -19,6 +19,7 @@ RUN yarn install
 
 COPY ./server ./
 COPY --from=frontend_build /webui/dist ./public
+RUN npx prisma generate
 RUN yarn run build
 
 CMD [ "yarn", "run", "start" ]

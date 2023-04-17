@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import fastify from "fastify";
 import fastify_static from "@fastify/static";
+import cors from "@fastify/cors";
 import * as path from "path";
 import * as Sentry from "@sentry/node";
 import { adminRouter, publicRouter } from "./controllers";
@@ -28,6 +29,10 @@ server.setErrorHandler(async (error, request, reply) => {
   // Sending error to be logged in Sentry
   Sentry.captureException(error);
   reply.status(500).send({ error: "Something went wrong" });
+});
+
+server.register(cors, {
+  origin: process.env.ENV === "production" ? "score.vek.be" : "*",
 });
 
 server.register(fastify_static, {

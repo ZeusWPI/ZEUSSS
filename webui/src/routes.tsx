@@ -1,18 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
+import { Header } from "./components/Header";
 import { MainPage } from "./pages";
 import { AdminBracketPage } from "./pages/admin/bracket";
 import { AdminNavBar } from "./pages/admin/navbar";
 import { AdminPoulesPage } from "./pages/admin/poules";
 import { TeamAdminPage } from "./pages/admin/teams";
 import { BracketPage } from "./pages/bracket";
-import { LeagueSelectionOverlay } from "./pages/leagueSelectionOverlay";
 import { PublicNavBar } from "./pages/navbar";
 import { PoulePage } from "./pages/poules";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <LeagueSelectionOverlay />,
+    element: <Header />,
     children: [
       {
         index: true,
@@ -20,7 +20,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "/",
-        element: <PublicNavBar />,
         children: [
           {
             path: "poules",
@@ -34,7 +33,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "admin",
-        element: <AdminNavBar />,
         children: [
           {
             path: "teams",

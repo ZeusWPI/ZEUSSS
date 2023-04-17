@@ -5,9 +5,10 @@ import { useContext, useEffect, useState } from "react";
 declare type LeagueSelectionBox = Props.Selection<string> & {
   hideLabel?: boolean;
   readonly?: boolean;
+  dropDownPosition?: "bottom" | "top" | "flip"
 };
 
-export const LeagueSelectionBox = ({ value, onChange, filter, hideLabel, readonly }: LeagueSelectionBox) => {
+export const LeagueSelectionBox = ({ value, onChange, filter, hideLabel, readonly, dropDownPosition }: LeagueSelectionBox) => {
   const { leagues } = useContext(TeamContext);
   const [leagueOptions, setLeagueOptions] = useState<SelectItem[]>([]);
 
@@ -35,6 +36,8 @@ export const LeagueSelectionBox = ({ value, onChange, filter, hideLabel, readonl
       }}
       value={value}
       onChange={v => onChange(v ?? "")}
+      dropdownPosition={dropDownPosition}
+      withinPortal
     />
   );
 };

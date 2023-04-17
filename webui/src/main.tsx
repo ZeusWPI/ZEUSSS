@@ -10,8 +10,11 @@ import { queryClient } from "./lib/query";
 import { TeamContextProvider } from "./lib/stores/teamContext";
 import { theme } from "./lib/theme";
 import { router } from "./routes";
+import * as Sentry from "@sentry/browser";
 
 import "./styles/index.scss";
+
+Sentry.init({ dsn: "https://979ee2ae77cd4906a5c50fb0bd6e36db@glitchtip.zeus.gent/9" });
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

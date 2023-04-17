@@ -6,6 +6,8 @@ declare namespace Brackets {
     league: string;
     teams: Team[];
     date?: string;
+    parentId: number | null;
+    hasChildren: boolean;
   };
 
   type TreeNode = Match & {

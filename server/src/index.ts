@@ -318,9 +318,16 @@ server.register(
           league: request.params.league,
         },
         include: {
-          BracketMatchTeam: true,
+          BracketMatchTeam: {
+            include: {
+              team: true,
+            },
+          },
         },
       });
+      if (bracketMatches.length === 0) {
+        return reply.status(404).send({ message: "Er bestaat geen bracket voor deze league" });
+      }
 
       bracketMatches.sort((m1, m2) => {
         if (m1.parentId === null) return -1;
@@ -328,27 +335,38 @@ server.register(
         return m2.parentId - m1.parentId;
       });
 
+      const strippedMatches = bracketMatches.map(bm => {
+        const match: Omit<BracketMatch, "BracketMatchTeam"> & { teams: TeamWScore[] } = {
+          ...bm,
+          teams: bm.BracketMatchTeam.map(bmt => ({ score: bmt.score ?? 0, ...bmt.team })),
+        };
+        // @ts-ignore
+        delete match.BracketMatchTeam;
+        return match
+      });
+
       // Make frontend life easier
-      const bracketTree: Brackets.MatchNode[][] = createBracketTree(bracketMatches);
+      const bracketTree: Brackets.MatchNode[][] = createBracketTree(strippedMatches);
+      return reply.status(200).send(bracketTree[0]);
 
       // move tree to 2d array
-      const rounds: BracketMatch[][] = [];
-      const treeFlattener = (tree: Brackets.MatchNode[], roundIdx = 0) => {
-        tree.forEach(match => {
-          if (match.children) {
-            treeFlattener(match.children, roundIdx + 1);
-          }
-          if (!rounds[roundIdx]) {
-            rounds[roundIdx] = [];
-          }
-          match.teams = match.BracketMatchTeam;
-          delete match.children;
-          delete match.BracketMatchTeam;
-          rounds[roundIdx].push(match);
-        });
-      };
-      treeFlattener(bracketTree);
-      return reply.status(200).send(rounds.reverse());
+      // const rounds: BracketMatch[][] = [];
+      // const treeFlattener = (tree: Brackets.MatchNode[], roundIdx = 0) => {
+      //   tree.forEach(match => {
+      //     if (match.children) {
+      //       treeFlattener(match.children, roundIdx + 1);
+      //     }
+      //     if (!rounds[roundIdx]) {
+      //       rounds[roundIdx] = [];
+      //     }
+      //     match.teams = match.BracketMatchTeam;
+      //     delete match.children;
+      //     delete match.BracketMatchTeam;
+      //     rounds[roundIdx].push(match);
+      //   });
+      // };
+      // treeFlattener(bracketTree);
+      // return reply.status(200).send(rounds.reverse());
     });
 
     // POST requests
@@ -418,7 +436,7 @@ server.register(
         },
       });
 
-      if (!bracketMatchForLeague) {
+      if (bracketMatchForLeague) {
         reply.status(400).send({ message: "league already has a bracket" });
         return;
       }

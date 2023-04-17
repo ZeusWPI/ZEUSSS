@@ -342,7 +342,7 @@ server.register(
         };
         // @ts-ignore
         delete match.BracketMatchTeam;
-        return match
+        return match;
       });
 
       // Make frontend life easier
@@ -658,9 +658,52 @@ server.register(
       }
       reply.send(pouleMatchTeam);
     });
-    instance.patch("/bracket/matches/:matchId", async (request, reply) => {
-      // TODO: implement
-    });
+    instance.patch<{ Params: { matchId: string }; Body: { teams?: number[]; date?: string } }>(
+      "/bracket/matches/:matchId",
+      async (request, reply) => {
+        const bracketMatch = await prisma.bracketMatch.findFirst({
+          where: {
+            id: Number(request.params.matchId),
+          },
+        });
+        if (!bracketMatch) {
+          return reply.status(400).send({
+            message: `Match with id ${request.params.matchId} does not exist`,
+          });
+        }
+        if (request.body.teams) {
+          await prisma.bracketMatchTeam.deleteMany({
+            where: {
+              teamId: {
+                notIn: request.body.teams,
+              },
+            },
+          });
+          const existingTeams = await prisma.bracketMatchTeam.findMany({
+            where: {
+              teamId: {
+                in: request.body.teams,
+              },
+            },
+          });
+          const idsToCreate = request.body.teams.filter(tId => !existingTeams.find(exTeam => exTeam.id === tId));
+          await prisma.bracketMatchTeam.createMany({
+            data: idsToCreate.map(id => ({ teamId: id, bracketMatchId: bracketMatch.id })),
+            skipDuplicates: true,
+          });
+        }
+        if (request.body.date) {
+          await prisma.bracketMatch.update({
+            where: {
+              id: bracketMatch.id,
+            },
+            data: {
+              date: new Date(request.body.date),
+            },
+          });
+        }
+      }
+    );
     instance.patch("/bracket/matches/:matchId/teams/:teamId", async (request: any, reply) => {
       // Check if matchId belongs to teamId
       let bracketMatchTeam = await prisma.bracketMatchTeam.findFirst({

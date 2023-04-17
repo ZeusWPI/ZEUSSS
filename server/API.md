@@ -275,7 +275,7 @@ body:
 
 ```json
 {
-    teams?: string[] // list of team ids
+    teams?: number[] // list of team ids
     date?: Date,
 }
 ```

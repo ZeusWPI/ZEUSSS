@@ -2,6 +2,7 @@ import { FastifyPluginAsync } from "fastify";
 import { prisma } from "../lib/db";
 import { PouleMatch, PouleMatchTeam, Team } from "@prisma/client";
 import { createPouleMatches, deletePouleMatchesAndTeams, matchesHaveBeenPlayed } from "../poules";
+import dayjs from "dayjs";
 
 const publicRouter: FastifyPluginAsync = async server => {
   server.get<{ Querystring: { league: string } }>("/poules", async (request, reply) => {
@@ -183,7 +184,16 @@ const publicRouter: FastifyPluginAsync = async server => {
       where: {
         AND: {
           NOT: {
-            date: null,
+            OR: [
+              {
+                date: null,
+              },
+              {
+                date: {
+                  gte: new Date(),
+                },
+              },
+            ],
           },
           poule: {
             league: req.query.league,
@@ -203,18 +213,22 @@ const publicRouter: FastifyPluginAsync = async server => {
       take: count,
     });
 
-    return matches.map(
-      (
-        match: PouleMatch & {
-          teams?: (Team & { score: number | null })[];
-          PouleMatchTeam?: (PouleMatchTeam & { team: Team })[];
+    // Extra filter is needed because this is not posible in prisma unless you use rawQuery
+    const now = dayjs();
+    return matches
+      .filter(match => dayjs(match.date).add(30, "minute").isBefore(now))
+      .map(
+        (
+          match: PouleMatch & {
+            teams?: (Team & { score: number | null })[];
+            PouleMatchTeam?: (PouleMatchTeam & { team: Team })[];
+          }
+        ) => {
+          match.teams = match.PouleMatchTeam?.map(pmt => ({ ...pmt.team, score: pmt.score })) ?? [];
+          delete match.PouleMatchTeam;
+          return match;
         }
-      ) => {
-        match.teams = match.PouleMatchTeam?.map(pmt => ({ ...pmt.team, score: pmt.score })) ?? [];
-        delete match.PouleMatchTeam;
-        return match;
-      }
-    );
+      );
   });
 
   server.get("/poules/:pouleId/matches/:matchId", async (request: any, reply) => {

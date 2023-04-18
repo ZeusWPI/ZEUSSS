@@ -32,6 +32,10 @@ export const TeamAdminPage = () => {
     modals.openConfirmModal({
       title: "U sure you want to delete this team?",
       children: <Text>This can only be done when the team is not assigned to a poule or bracket match</Text>,
+      labels: {
+        cancel: "Cancel",
+        confirm: "Confirm"
+      },
       onConfirm: () => deleteAPI(`/api/admin/teams/${id}`, "Could not delete team"),
     });
   };

@@ -39,7 +39,7 @@ export const UpdateTeamModal = ({ team }: UpdateTeamModalProps) => {
     <TeamModal
       team={mergedTeam}
       onClick={updateTeam}
-      btnLabel={"Updated"}
+      btnLabel={"Update"}
       btnDisabled={btnDisabled}
       updateTeam={setEditedTeam}
     />

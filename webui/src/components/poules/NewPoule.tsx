@@ -40,7 +40,7 @@ export const NewPoule = ({ index, assignedTeams }: { index: number; assignedTeam
       }),
     });
     const data = await resp.json();
-    queryClient.invalidateQueries(["poules", selectedLeague]);
+    queryClient.invalidateQueries({queryKey: ["poules", selectedLeague]});
     if (!resp.ok) {
       notifications.show({
         message: `Er is iets fout gelopen tijdens het creeren van de poule: ${data?.message ?? resp.statusText}`,

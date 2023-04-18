@@ -24,7 +24,7 @@ export const UpdateTeamModal = ({ team }: UpdateTeamModalProps) => {
       body: JSON.stringify(editedTeam),
     });
     const data = await resp.json();
-    queryClient.invalidateQueries(["teams"]);
+    queryClient.invalidateQueries({queryKey: ["teams"]});
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update team: ${data?.message ?? resp.statusText}`,

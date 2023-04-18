@@ -32,7 +32,7 @@ export const CreateModalTeam = () => {
       });
       return;
     }
-    queryClient.invalidateQueries(["teams"]);
+    queryClient.invalidateQueries({queryKey: ["teams"]});
     modals.closeAll();
   };
 

@@ -56,7 +56,7 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
       }),
     });
     const data = await resp.json();
-    queryClient.invalidateQueries(["poule", poule.id]);
+    queryClient.invalidateQueries({queryKey: ["poule", poule.id]});
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update team score, ${teamId} - ${matchId}: ${data?.message ?? resp.statusText}`,
@@ -81,7 +81,7 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
       }),
     });
     const data = await resp.json();
-    queryClient.invalidateQueries(["poule", poule.id]);
+    queryClient.invalidateQueries({queryKey: ["poule", poule.id]});
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update match date, ${matchId}: ${data?.message ?? resp.statusText}`,

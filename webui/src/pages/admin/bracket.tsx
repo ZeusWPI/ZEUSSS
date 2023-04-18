@@ -42,7 +42,7 @@ export const AdminBracketPage = () => {
       }),
     });
     const data = await resp.json();
-    queryClient.invalidateQueries(["bracket", selectedLeague]);
+    queryClient.invalidateQueries({queryKey: ["bracket", selectedLeague]});
     if (!resp.ok) {
       notifications.show({
         message: `Failed to generate bracket: ${data?.message ?? resp.statusText}`,

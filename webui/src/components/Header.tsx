@@ -1,7 +1,7 @@
 import { TeamContext } from "@/lib/stores/teamContext";
 import { AdminNavBar } from "@/pages/admin/navbar";
 import { PublicNavBar } from "@/pages/navbar";
-import { ActionIcon, Container, Flex, Modal } from "@mantine/core";
+import { ActionIcon, Box, Container, Flex, Modal } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { BoxSelect } from "lucide-react";
 import { useContext, useMemo } from "react";
@@ -16,8 +16,8 @@ export const Header = () => {
   const onAdmin = useMemo(() => {
     return location.pathname.startsWith("/admin");
   }, [location]);
-  const onBracket = useMemo(() => {
-    return location.pathname.startsWith("/bracket");
+  const onFullWidth = useMemo(() => {
+    return location.pathname.endsWith("/bracket") || location.pathname.endsWith("/poules");
   }, [location]);
 
   return (
@@ -44,8 +44,10 @@ export const Header = () => {
           <LeagueSelectionBox value={selectedLeague} onChange={chooseLeague} hideLabel readonly />
         )}
       </Flex>
-      {onBracket ? (
-        <Outlet />
+      {onFullWidth ? (
+        <Box p={"xs"}>
+          <Outlet />
+        </Box>
       ) : (
         <Container p={"xs"} size={"xl"}>
           <Outlet />

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": ["node_modules"],

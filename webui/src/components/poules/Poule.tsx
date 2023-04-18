@@ -18,6 +18,7 @@ import {
 import { DateTimePicker } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -158,7 +159,12 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
                       />
                     )}
                   </Group>
-                  {i < match.teams.length - 1 && <Divider my="xs" label="VS" />}
+                  {i < match.teams.length - 1 && (
+                    <Flex w="100%" align="center">
+                      <Divider w={"100%"} my="xs" label="VS" />
+                      {match.date && <Text w={"70%"} ml={"xs"} size={"xs"}>{dayjs(match.date).format("DD/MM/YYYY HH:mm")}</Text>}
+                    </Flex>
+                  )}
                 </>
               ))}
               {!readonly && (

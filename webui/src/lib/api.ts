@@ -56,7 +56,7 @@ export const fetchPouleMatches = async (id: number): Promise<API.ParsedMatch[]> 
     if (!m2.date) {
       return -1;
     }
-    return Date.parse(m2.date) - Date.parse(m1.date);
+    return Date.parse(m1.date) - Date.parse(m2.date);
   });
   return data.map(m => {
     return { ...m, date: m.date ? new Date(m.date) : undefined };

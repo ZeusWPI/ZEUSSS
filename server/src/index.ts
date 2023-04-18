@@ -7,7 +7,9 @@ import * as path from "path";
 import * as Sentry from "@sentry/node";
 import { adminRouter, publicRouter } from "./controllers";
 
-Sentry.init({ dsn: "https://979ee2ae77cd4906a5c50fb0bd6e36db@glitchtip.zeus.gent/9" });
+if (process.env.ENV === "production") {
+  Sentry.init({ dsn: "https://979ee2ae77cd4906a5c50fb0bd6e36db@glitchtip.zeus.gent/9" });
+}
 
 const server = fastify({
   disableRequestLogging: true,
@@ -23,13 +25,15 @@ const server = fastify({
   },
 });
 
-server.setErrorHandler(async (error, request, reply) => {
-  // Logging locally
-  server.log.error(error);
-  // Sending error to be logged in Sentry
-  Sentry.captureException(error);
-  reply.status(500).send({ error: "Something went wrong" });
-});
+if (process.env.ENV === "production") {
+  server.setErrorHandler(async (error, request, reply) => {
+    // Logging locally
+    server.log.error(error);
+    // Sending error to be logged in Sentry
+    Sentry.captureException(error);
+    reply.status(500).send({ error: "Something went wrong" });
+  });
+}
 
 server.register(cors, {
   origin: process.env.ENV === "production" ? "score.vek.be" : "*",

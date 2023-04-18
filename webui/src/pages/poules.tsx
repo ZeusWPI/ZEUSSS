@@ -40,10 +40,12 @@ export const PoulePage = () => {
   return (
     <>
       <RecentPouleMatchBanner />
-      <Flex wrap={"wrap"} justify={mobile ? "center" : "left"}>
-        {data.map(p => (
-          <Poule key={`poule-${p.id}`} poule={p} readonly />
-        ))}
+      <Flex style={{overflow: "auto"}}>
+        <Flex justify={mobile ? "center" : "left"}>
+          {data.map(p => (
+            <Poule key={`poule-${p.id}`} poule={p} readonly />
+          ))}
+        </Flex>
       </Flex>
     </>
   );

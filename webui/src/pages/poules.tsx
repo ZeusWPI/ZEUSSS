@@ -12,6 +12,7 @@ export const PoulePage = () => {
   const { isLoading, isError, error, data } = useQuery<API.Poule[], Error>({
     queryKey: ["poules", selectedLeague, "public"],
     queryFn: () => fetchPouleInfo(selectedLeague),
+    staleTime: 30000,
   });
   const mobile = useMediaQuery("(max-width: 670px)");
 

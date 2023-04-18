@@ -113,64 +113,6 @@ const publicRouter: FastifyPluginAsync = async server => {
 
     reply.send(mapped_poules);
   });
-  server.get("/poules/:id", async (request: any, reply) => {
-    type PouleTeam = {
-      id: number;
-      name: string;
-      league: string;
-    };
-
-    type CompletePoule = {
-      id: number;
-      name: string;
-      teams: PouleTeam[];
-      matches: string;
-    };
-
-    const id_param = parseInt(request.params.id);
-
-    const poule = await prisma.poule.findFirst({
-      where: {
-        id: id_param,
-      },
-      select: {
-        id: true,
-        name: true,
-        PouleMatch: {
-          include: {
-            PouleMatchTeam: {
-              include: {
-                team: {
-                  select: {
-                    id: true,
-                    name: true,
-                    league: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!poule) {
-      reply.code(404).send();
-      return;
-    }
-
-    const poule_teams = poule.PouleMatch.flatMap(pm => pm.PouleMatchTeam.map(pmt => pmt.team));
-
-    const complete_poule: CompletePoule = {
-      id: id_param,
-      name: poule.name,
-      teams: poule_teams,
-      matches: `/poules/${poule.id}/matches`,
-    };
-
-    reply.send(complete_poule);
-  });
-
   server.get("/poules/:pouleId/matches", async (request: any, reply) => {
     // Check if poule exists
     const poule = await prisma.poule.findFirst({

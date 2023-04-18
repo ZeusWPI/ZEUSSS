@@ -51,25 +51,6 @@ returns:
 ]
 ```
 
-## /api/poules/{id}
-
-returns:
-
-```json
-{
-    id: number = id,
-    name: string,
-    teams: [
-        {
-            id: number,
-            name: string,
-            league: string
-        }, ...
-    ],
-    matches: "/poules/{id}/matches"
-}
-```
-
 ## /api/poules/{id}/matches
 
 returns:

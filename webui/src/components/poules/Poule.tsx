@@ -148,12 +148,12 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
                   <Group key={`match-${match.id}-team-${mTeam.id}`} position={"apart"}>
                     <Text>{mTeam.name}</Text>
                     {readonly ? (
-                      <Text weight={"bold"}>{mTeam.score}</Text>
+                      <Text weight={"bold"}>{mTeam.score ?? (match.teams.some(mTeam => mTeam.score !== null) ? 0 : "")}</Text>
                     ) : (
                       <NumberInput
                         min={0}
                         placeholder="score"
-                        value={mTeam.score ?? 0}
+                        value={mTeam.score ?? -1}
                         onBlur={v => updateTeamScore(match.id, mTeam.id, Number(v.currentTarget.value))}
                         w={"30%"}
                       />

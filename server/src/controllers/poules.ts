@@ -40,15 +40,68 @@ const publicRouter: FastifyPluginAsync = async server => {
 
     const mapped_poules = poules.map(p => {
       const poule_teams = p.PouleMatch.reduce<TeamWScore[]>((arr, match) => {
+        // Score should be based on typical poule points: 3 for a win, 1 for a draw, 0 for a loss
+        if (
+          match.date === null ||
+          match.PouleMatchTeam.length === 0 ||
+          match.PouleMatchTeam.every(pmt => pmt.score === null)
+        ) {
+          match.PouleMatchTeam.forEach(dbTeam => {
+            const team = arr.find(t => t.id === dbTeam.team.id);
+            if (!team) {
+              arr.push({ ...dbTeam.team, score: 0 });
+            }
+          });
+          return arr;
+        }
+
+        const firstScore = match.PouleMatchTeam[0].score;
+        if (match.PouleMatchTeam.every(pmt => pmt.score === firstScore)) {
+          match.PouleMatchTeam.forEach(dbTeam => {
+            const team = arr.find(t => t.id === dbTeam.team.id);
+            if (team) {
+              team.score += 1;
+            } else {
+              arr.push({ ...dbTeam.team, score: 1 });
+            }
+          });
+          return arr;
+        }
+
+        // Find winner
+        const winner = match.PouleMatchTeam.reduce(
+          (winner, pmt) => {
+            if (pmt === null || pmt.score === null) {
+              return winner;
+            }
+            if (winner === null || winner.score === null) {
+              return pmt;
+            }
+            if (pmt.score > winner.score) {
+              return pmt;
+            }
+            return winner;
+          },
+          null as {
+            team: {
+              id: number;
+              name: string;
+              league: string;
+            };
+            score: number | null;
+          } | null
+        );
+
         match.PouleMatchTeam.forEach(dbTeam => {
           const team = arr.find(t => t.id === dbTeam.team.id);
-          const score = dbTeam.score ?? 0;
+          const score = dbTeam.team.id === winner?.team.id ? 3 : 0;
           if (team) {
             team.score += score;
           } else {
             arr.push({ ...dbTeam.team, score });
           }
         });
+
         return arr;
       }, []);
       return {
@@ -152,7 +205,7 @@ const publicRouter: FastifyPluginAsync = async server => {
         },
       },
       orderBy: {
-        id: "asc",
+        date: "asc",
       },
     });
 

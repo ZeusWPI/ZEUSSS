@@ -20,7 +20,7 @@ export const BracketPage = () => {
     enabled: !!selectedLeague && selectedLeague !== "",
   });
 
-  if (isLoading) {
+  if (isLoading && !!selectedLeague && selectedLeague !== "") {
     return (
       <Center>
         <Group spacing={"xs"}>

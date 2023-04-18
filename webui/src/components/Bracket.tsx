@@ -21,8 +21,8 @@ const TeamNameView = (props: { team?: API.MatchTeam }) => {
   );
 };
 
-export const Bracket = ({ masterNode: bracket, readonly }: { masterNode: Brackets.TreeNode; readonly?: boolean }) => {
-  const { left, right, final } = useBracket(bracket);
+export const Bracket = ({ masterNodes, readonly }: { masterNodes: Brackets.TreeNode[]; readonly?: boolean }) => {
+  const { left, right, final } = useBracket(masterNodes);
   const theme = useMantineTheme();
   const { selectedLeague } = useContext(TeamContext);
   const [loading, setLoading] = useState<Record<number, boolean>>({});
@@ -30,6 +30,7 @@ export const Bracket = ({ masterNode: bracket, readonly }: { masterNode: Bracket
 
   const CustomSeed = ({ seed, breakpoint, roundIndex, seedIndex, rounds }: IRenderSeedProps) => {
     const matchInfo = rounds?.[roundIndex].seeds[seedIndex];
+    const isFinal = roundIndex === 0 && seedIndex === 0 && matchInfo?.hasChildren && matchInfo?.parentId === null;
 
     const updateMatchTeams = async (team: Team, oldTeam: Team | undefined) => {
       if (!matchInfo || loading[Number(matchInfo.id)]) return;
@@ -95,7 +96,7 @@ export const Bracket = ({ masterNode: bracket, readonly }: { masterNode: Bracket
         style={{ fontSize: 12, padding: theme.spacing.xs }}
         data-matchId={matchInfo?.id}
       >
-        <SeedItem style={{ backgroundColor: theme.colors.vek[7] }}>
+      <SeedItem style={{ backgroundColor: isFinal ? theme.colors.yellow[7] : theme.colors.vek[7] }}>
           <div>
             <SeedTeam>
               {readonly ? (
@@ -150,12 +151,17 @@ export const Bracket = ({ masterNode: bracket, readonly }: { masterNode: Bracket
         mobileBreakpoint={10}
         roundTitleComponent={EmptyRoundTitle}
       />
-      <RBracket
-        rounds={final}
-        renderSeedComponent={CustomSeed}
-        mobileBreakpoint={10}
-        roundTitleComponent={EmptyRoundTitle}
-      />
+      <Flex direction="column" justify="center">
+        {final.map(finalSeed => (
+          <RBracket
+            key={finalSeed[0].seeds[0].id}
+            rounds={finalSeed}
+            renderSeedComponent={CustomSeed}
+            mobileBreakpoint={10}
+            roundTitleComponent={EmptyRoundTitle}
+          />
+        ))}
+      </Flex>
       <RBracket
         rounds={right}
         renderSeedComponent={CustomSeed}

@@ -15,7 +15,7 @@ export const AdminBracketPage = () => {
     isError,
     error,
     data: bracketData,
-  } = useQuery<Brackets.TreeNode | null, Error>({
+  } = useQuery<Brackets.TreeNode[] | null, Error>({
     queryKey: ["bracket", selectedLeague, "admin"],
     queryFn: () => fetchBracket(selectedLeague),
     staleTime: 30000,
@@ -83,7 +83,7 @@ export const AdminBracketPage = () => {
 
   return (
     <div>
-      {!bracketData ? (
+      {!bracketData || bracketData.length === 0  ? (
         <Center>
           <Stack>
             <NumberInput
@@ -97,7 +97,7 @@ export const AdminBracketPage = () => {
           </Stack>
         </Center>
       ) : (
-        <Bracket masterNode={bracketData} />
+        <Bracket masterNodes={bracketData} />
       )}
     </div>
   );

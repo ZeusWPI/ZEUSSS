@@ -28,6 +28,7 @@ const publicRouter: FastifyPluginAsync = async server => {
     }
 
     bracketMatches.sort((m1, m2) => {
+      if (m1.parentId === null && m2.parentId === null) return 0;
       if (m1.parentId === null) return -1;
       if (m2.parentId === null) return 1;
       return m2.parentId - m1.parentId;
@@ -45,7 +46,7 @@ const publicRouter: FastifyPluginAsync = async server => {
 
     // Make frontend life easier
     const bracketTree: Brackets.MatchNode[][] = createBracketTree(strippedMatches);
-    return reply.status(200).send(bracketTree[0]);
+    return reply.status(200).send(bracketTree);
   });
 };
 
@@ -101,6 +102,13 @@ const adminRouter: FastifyPluginAsync = async server => {
     };
 
     await initializeBracketRecursive(amount, null);
+    await prisma.bracketMatch.create({
+      data: {
+        parentId: null,
+        league,
+        date: null,
+      },
+    });
     reply.send({ message: "created" });
   });
 

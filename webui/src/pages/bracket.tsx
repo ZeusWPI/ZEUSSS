@@ -13,7 +13,7 @@ export const BracketPage = () => {
     isError,
     error,
     data: bracketData,
-  } = useQuery<Brackets.TreeNode | null, Error>({
+  } = useQuery<Brackets.TreeNode[] | null, Error>({
     queryKey: ["bracket", selectedLeague, "admin"],
     queryFn: () => fetchBracket(selectedLeague),
     staleTime: 30000,
@@ -52,7 +52,7 @@ export const BracketPage = () => {
 
   return (
     <div>
-      {!bracketData ? (
+      {!bracketData || bracketData.length === 0  ? (
         <Center>
           <Text weight="bold">
             The bracket for this league is undecided at the moment
@@ -61,7 +61,7 @@ export const BracketPage = () => {
           </Text>
         </Center>
       ) : (
-        <Bracket masterNode={bracketData} readonly />
+        <Bracket masterNodes={bracketData} readonly />
       )}
     </div>
   );

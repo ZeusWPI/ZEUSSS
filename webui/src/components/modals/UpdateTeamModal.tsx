@@ -1,4 +1,5 @@
 import { queryClient } from "@/lib/query";
+import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useMemo, useState } from "react";
 import { TeamModal } from "./TeamModal";
@@ -31,7 +32,7 @@ export const UpdateTeamModal = ({ team }: UpdateTeamModalProps) => {
         color: "red",
       });
     }
-
+    modals.closeAll();
     setBtnDisabled(false);
   };
 

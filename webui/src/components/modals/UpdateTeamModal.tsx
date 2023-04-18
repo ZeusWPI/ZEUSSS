@@ -1,6 +1,6 @@
 import { queryClient } from "@/lib/query";
 import { notifications } from "@mantine/notifications";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { TeamModal } from "./TeamModal";
 
 type UpdateTeamModalProps = {
@@ -10,6 +10,7 @@ type UpdateTeamModalProps = {
 export const UpdateTeamModal = ({ team }: UpdateTeamModalProps) => {
   const [editedTeam, setEditedTeam] = useState<Partial<Team>>({});
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const mergedTeam = useMemo(() => ({...team, ...editedTeam}),[editedTeam, team]);
 
   const updateTeam = async () => {
     if (btnDisabled) return;
@@ -36,7 +37,7 @@ export const UpdateTeamModal = ({ team }: UpdateTeamModalProps) => {
 
   return (
     <TeamModal
-      team={team}
+      team={mergedTeam}
       onClick={updateTeam}
       btnLabel={"Updated"}
       btnDisabled={btnDisabled}

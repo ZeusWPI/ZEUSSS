@@ -17,7 +17,7 @@ export const AdminBracketPage = () => {
     data: bracketData,
   } = useQuery<Brackets.TreeNode[] | null, Error>({
     queryKey: ["bracket", selectedLeague, "admin"],
-    queryFn: () => fetchBracket(selectedLeague),
+    queryFn: () => fetchBracket(selectedLeague, true),
     staleTime: 30000,
     enabled: !!selectedLeague && selectedLeague !== "",
   });

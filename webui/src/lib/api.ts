@@ -29,8 +29,12 @@ export const fetchTeams = async () => {
   return data;
 };
 
-export const fetchPouleInfo = async (league: string) => {
-  const resp = await fetch(`/api/poules?${new URLSearchParams({ league })}`);
+export const fetchPouleInfo = async (league: string, skipCache = false) => {
+  const resp = await fetch(`/api/poules?${new URLSearchParams({ league })}`, {
+    headers: skipCache ? {
+      cachepurge: "true",
+    } : {},
+  });
   const data: API.Poule[] = await resp.json();
   if (!resp.ok) {
     notifications.show({
@@ -42,8 +46,12 @@ export const fetchPouleInfo = async (league: string) => {
   return data;
 };
 
-export const fetchPouleMatches = async (id: number): Promise<API.ParsedMatch[]> => {
-  const resp = await fetch(`/api/poules/${id}/matches`);
+export const fetchPouleMatches = async (id: number, skipCache = false): Promise<API.ParsedMatch[]> => {
+  const resp = await fetch(`/api/poules/${id}/matches`, {
+    headers: skipCache ? {
+      cachepurge: "true",
+    } : {},
+  });
   const data: API.Match[] = await resp.json();
   if (!resp.ok) return [];
   data.sort((m1, m2) => {
@@ -74,9 +82,13 @@ export const fetchRecentPouleMatches = async (league: string): Promise<API.Match
   return data;
 };
 
-export const fetchBracket = async (league: string): Promise<Brackets.TreeNode[] | null> => {
+export const fetchBracket = async (league: string, skipCache = false): Promise<Brackets.TreeNode[] | null> => {
   if (league === "") return null;
-  const resp = await fetch(`/api/bracket/${league}/matches`);
+  const resp = await fetch(`/api/bracket/${league}/matches`,{
+    headers: skipCache ? {
+      cachepurge: "true",
+    } : {},
+  });
   const data = await resp.json();
   if (!resp.ok) {
     if (resp.status === 404) {
@@ -88,7 +100,11 @@ export const fetchBracket = async (league: string): Promise<Brackets.TreeNode[] 
 };
 
 export const fetchMatchLocations = async (): Promise<string[]> => {
-  const resp = await fetch("/api/matchLocations");
+  const resp = await fetch("/api/matchLocations", {
+    headers: {
+      cachepurge: "true",
+    },
+  });
   const data = await resp.json();
   if (!resp.ok) {
     throw new Response(data?.message ?? resp.statusText, { status: resp.status });

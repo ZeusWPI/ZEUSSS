@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { LocationSelectBox } from "../inputs/LocationSelectBox";
 
 declare type PouleProps = {
@@ -30,13 +31,15 @@ declare type PouleProps = {
 };
 
 export const Poule = ({ poule, readonly }: PouleProps) => {
+  const location = useLocation();
+  const onAdmin = useMemo(() => location.pathname.startsWith("/admin"), [location]);
   const {
     isLoading,
     isError,
     data: matches,
   } = useQuery({
     queryKey: ["poule", poule.id],
-    queryFn: () => fetchPouleMatches(poule.id),
+    queryFn: () => fetchPouleMatches(poule.id, onAdmin),
     staleTime: 30000,
   });
   const [editingMatchDate, setEditingMatchDate] = useState<Record<number, Date>>({});

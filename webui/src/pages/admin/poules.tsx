@@ -10,7 +10,7 @@ export const AdminPoulesPage = () => {
   const { selectedLeague } = useContext(TeamContext);
   const { isLoading, isError, error, data } = useQuery<API.Poule[], Error>({
     queryKey: ["poules", selectedLeague, "admin"],
-    queryFn: () => fetchPouleInfo(selectedLeague),
+    queryFn: () => fetchPouleInfo(selectedLeague, true),
   });
 
   if (isLoading) {

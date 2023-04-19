@@ -16,6 +16,8 @@ services:
   zeusss:
     build:
       context: .
+      tags:
+        - "zeusss:latest"
     depends_on:
       - db
     container_name: zeusss

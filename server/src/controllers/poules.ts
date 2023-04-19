@@ -155,6 +155,7 @@ const publicRouter: FastifyPluginAsync = async server => {
       return {
         id: pm.id,
         date: pm.date,
+        location: pm.location,
         teams: pm.PouleMatchTeam.map(pmt => {
           return {
             id: pmt.team.id,
@@ -244,7 +245,13 @@ const publicRouter: FastifyPluginAsync = async server => {
               },
             },
           },
+          orderBy: {
+            id: "asc",
+          },
         },
+      },
+      orderBy: {
+        id: "asc",
       },
     });
     if (!pouleMatch) {
@@ -375,14 +382,9 @@ const adminRouter: FastifyPluginAsync = async server => {
     reply.send(poule);
   });
   server.patch<{
-    Body: { date: string; scores: Record<number, number> };
+    Body: { date: string; scores: Record<number, number>; location?: string };
     Params: { matchId: string; pouleId: string };
   }>("/poules/:pouleId/matches/:matchId", async (request, reply) => {
-    if (request.body.date === undefined) {
-      return reply.status(400).send({
-        message: `The body is missing a date when the match was finished/played/registered`,
-      });
-    }
     // Check if matchId belongs to pouleId
     let pouleMatch = await prisma.pouleMatch.findFirst({
       where: {
@@ -397,13 +399,22 @@ const adminRouter: FastifyPluginAsync = async server => {
       return;
     }
 
+    const dataToUpdate: Partial<PouleMatch> = {};
+    if (request.body.date) {
+      dataToUpdate.date = new Date(request.body.date);
+    }
+    if (request.body.location) {
+      dataToUpdate.location = request.body.location;
+    }
+    if (Object.keys(dataToUpdate).length === 0) {
+      return reply.status(400).send({ message: "body has nothing to update" });
+    }
+
     pouleMatch = await prisma.pouleMatch.update({
       where: {
         id: parseInt(request.params.matchId),
       },
-      data: {
-        date: new Date(request.body.date),
-      },
+      data: dataToUpdate,
     });
 
     for (const teamId in request.body.scores) {

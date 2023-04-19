@@ -6,6 +6,7 @@ declare namespace API {
   type Match = {
     id: number;
     date?: string;
+    location?: string;
     teams: MatchTeam[];
   };
 

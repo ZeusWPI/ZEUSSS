@@ -86,3 +86,12 @@ export const fetchBracket = async (league: string): Promise<Brackets.TreeNode[] 
   }
   return data;
 };
+
+export const fetchMatchLocations = async (): Promise<string[]> => {
+  const resp = await fetch("/api/matchLocations");
+  const data = await resp.json();
+  if (!resp.ok) {
+    throw new Response(data?.message ?? resp.statusText, { status: resp.status });
+  }
+  return data;
+};

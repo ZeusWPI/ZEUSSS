@@ -14,6 +14,7 @@ import {
   Title,
   Divider,
   useMantineTheme,
+  Box,
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
@@ -21,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { LocationSelectBox } from "../inputs/LocationSelectBox";
 
 declare type PouleProps = {
   poule: API.Poule;
@@ -31,7 +33,6 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
   const {
     isLoading,
     isError,
-    error,
     data: matches,
   } = useQuery({
     queryKey: ["poule", poule.id],
@@ -86,6 +87,27 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
     if (!resp.ok) {
       notifications.show({
         message: `Failed to update match date, ${matchId}: ${data?.message ?? resp.statusText}`,
+        color: "red",
+      });
+      return;
+    }
+  };
+
+  const updateMatchLocation = async (matchId: number, location: string) => {
+    const resp = await fetch(`/api/admin/poules/${poule.id}/matches/${matchId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        location,
+      }),
+    });
+    const data = await resp.json();
+    queryClient.invalidateQueries({queryKey: ["poule", poule.id]});
+    if (!resp.ok) {
+      notifications.show({
+        message: `Failed to update match location, ${matchId}: ${data?.message ?? resp.statusText}`,
         color: "red",
       });
       return;
@@ -161,21 +183,33 @@ export const Poule = ({ poule, readonly }: PouleProps) => {
                   </Group>
                   {i < match.teams.length - 1 && (
                     <Flex w="100%" align="center">
-                      <Divider w={"100%"} my="xs" label="VS" />
-                      {match.date && <Text w={"70%"} ml={"xs"} size={"xs"}>{dayjs(match.date).format("DD/MM/YYYY HH:mm")}</Text>}
+                      <Divider miw={"40%"} w={"100%"} my="xs" label="VS" />
+                      {(match.date || match.location) && (
+                        <Flex align={"center"}>
+                          {match.date && (
+                            <Text w={"100%"} style={{whiteSpace: "nowrap"}} span ml={2} size={"xs"} align="right">{dayjs(match.date).format("DD/MM/YYYY HH:mm")}</Text>
+                          )}
+                          {match.location && (
+                            <Text span ml={2} size={"xs"} align="right">@{match.location}</Text>
+                          )}
+                        </Flex>
+                      )}
                     </Flex>
                   )}
                 </>
               ))}
               {!readonly && (
-                <DateTimePicker
-                  label="Match play moment"
-                  value={editingMatchDate[match.id]}
-                  onChange={date => setEditingMatchDate(d => ({ ...d, [match.id]: date ?? new Date() }))}
-                  submitButtonProps={{
-                    onClick: () => updateMatchDate(match.id),
-                  }}
-                />
+                <>
+                  <DateTimePicker
+                    label="Match play moment"
+                    value={editingMatchDate[match.id]}
+                    onChange={date => setEditingMatchDate(d => ({ ...d, [match.id]: date ?? new Date() }))}
+                    submitButtonProps={{
+                      onClick: () => updateMatchDate(match.id),
+                    }}
+                  />
+                  <LocationSelectBox value={match.location} onChange={v => updateMatchLocation(match.id, v)} pt={"xs"} />
+                </>
               )}
             </Paper>
           ))}

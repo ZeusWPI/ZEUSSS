@@ -29,6 +29,26 @@ const publicRouter: FastifyPluginAsync = async server => {
 
     reply.send(team);
   });
+  server.get("/matchLocations", async (request, reply) => {
+    const pouleLocations = await prisma.pouleMatch.findMany({
+      where: {
+        NOT: {
+          location: null,
+        },
+      },
+      select: {
+        location: true,
+      },
+      distinct: ["location"],
+    });
+    const bracketLocations = await prisma.bracketMatch.findMany({
+      select: {
+        location: true,
+      },
+      distinct: ["location"],
+    });
+    reply.status(200).send(pouleLocations.concat(bracketLocations).map(dbL => dbL.location));
+  });
 };
 
 const adminRouter: FastifyPluginAsync = async server => {
@@ -97,7 +117,7 @@ const adminRouter: FastifyPluginAsync = async server => {
   });
 };
 
-export const teamRouter = {
+export const mainRouter = {
   public: publicRouter,
   admin: adminRouter,
 };

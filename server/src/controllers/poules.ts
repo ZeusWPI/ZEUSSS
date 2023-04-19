@@ -151,21 +151,32 @@ const publicRouter: FastifyPluginAsync = async server => {
       },
     });
 
-    const pouleMatchesFormatted = pouleMatches.map(pm => {
-      return {
-        id: pm.id,
-        date: pm.date,
-        location: pm.location,
-        teams: pm.PouleMatchTeam.map(pmt => {
-          return {
-            id: pmt.team.id,
-            name: pmt.team.name,
-            score: pmt.score,
-            league: pmt.team.league,
-          };
-        }),
-      };
-    });
+    const pouleMatchesFormatted = pouleMatches
+      .map(pm => {
+        return {
+          id: pm.id,
+          date: pm.date,
+          location: pm.location,
+          teams: pm.PouleMatchTeam.map(pmt => {
+            return {
+              id: pmt.team.id,
+              name: pmt.team.name,
+              score: pmt.score,
+              league: pmt.team.league,
+            };
+          }),
+        };
+      })
+      .sort((pm1, pm2) => {
+        if (pm1.date && !pm2.date) return 1;
+        if (pm2.date && !pm1.date) return -1;
+        if (pm2.date && pm1.date) return pm2.date.getTime() - pm1.date.getTime();
+        const pm1HasScore = pm1.teams.some(t => t.score !== null);
+        const pm2HasScore = pm2.teams.some(t => t.score !== null);
+        if (pm1HasScore && !pm2HasScore) return -1;
+        if (!pm1HasScore && pm2HasScore) return 1;
+        return 0;
+      });
 
     reply.send(pouleMatchesFormatted);
   });
@@ -225,54 +236,6 @@ const publicRouter: FastifyPluginAsync = async server => {
           return match;
         }
       );
-  });
-
-  server.get("/poules/:pouleId/matches/:matchId", async (request: any, reply) => {
-    // Check if match exists in poule
-    const pouleMatch = await prisma.pouleMatch.findFirst({
-      where: {
-        id: parseInt(request.params.matchId),
-        pouleId: parseInt(request.params.pouleId),
-      },
-      include: {
-        PouleMatchTeam: {
-          include: {
-            team: {
-              select: {
-                id: true,
-                name: true,
-                league: true,
-              },
-            },
-          },
-          orderBy: {
-            id: "asc",
-          },
-        },
-      },
-      orderBy: {
-        id: "asc",
-      },
-    });
-    if (!pouleMatch) {
-      reply.code(404).send();
-      return;
-    }
-
-    const pouleMatchFormatted = {
-      id: pouleMatch.id,
-      date: pouleMatch.date,
-      teams: pouleMatch.PouleMatchTeam.map(pmt => {
-        return {
-          id: pmt.team.id,
-          name: pmt.team.name,
-          score: pmt.score,
-          league: pmt.team.league,
-        };
-      }),
-    };
-
-    reply.send(pouleMatchFormatted);
   });
 };
 
